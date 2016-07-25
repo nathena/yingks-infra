@@ -12,9 +12,19 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.yingks.infra.utils.LogHelper;
 
-public class JdbcGeneralRepository{
-	
+public class JdbcGeneralRepository
+{
 	private NamedParameterJdbcTemplate namedJdbcTemplate;
+	
+	public JdbcGeneralRepository()
+	{
+		
+	}
+	
+	public JdbcGeneralRepository(NamedParameterJdbcTemplate namedJdbcTemplate)
+	{
+		this.namedJdbcTemplate = namedJdbcTemplate;
+	}
 	
 	public NamedParameterJdbcTemplate getNamedJdbcTemplate() {
 		return namedJdbcTemplate;
@@ -23,6 +33,7 @@ public class JdbcGeneralRepository{
 	public void setNamedJdbcTemplate(NamedParameterJdbcTemplate namedJdbcTemplate) {
 		this.namedJdbcTemplate = namedJdbcTemplate;
 	}
+	
 
 	/**
 	 * 适用于更新数据库,insert,update, delete
