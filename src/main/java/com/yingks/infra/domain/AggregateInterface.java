@@ -24,6 +24,7 @@ public interface AggregateInterface {
 	public <T> T queryForEntity(Class<T> clazz,AggregateConditionInterface condition);
 	
 	public <T> List<T> queryForList(Class<T> clazz,AggregateConditionInterface condition);
+	public <T> long queryForLong(Class<T> clazz,AggregateConditionInterface condition);
 	
 	public <T> Pagination<T> queryForPagination(Class<T> clazz,AggregateConditionInterface condition);
 }

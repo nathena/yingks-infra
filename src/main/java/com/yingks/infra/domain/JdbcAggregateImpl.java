@@ -13,6 +13,7 @@ import com.yingks.infra.domain.command.JdbcUpdateCommand;
 import com.yingks.infra.domain.data.JdbcGeneralRepository;
 import com.yingks.infra.domain.query.JdbcSimpleQueryForEntity;
 import com.yingks.infra.domain.query.JdbcSimpleQueryForList;
+import com.yingks.infra.domain.query.JdbcSimpleQueryForLong;
 import com.yingks.infra.domain.query.JdbcSimpleQueryForPagination;
 
 public abstract class JdbcAggregateImpl implements AggregateInterface {
@@ -110,6 +111,15 @@ public abstract class JdbcAggregateImpl implements AggregateInterface {
 		query.setRepository(repository);
 		
 		return query.queryForList();
+	}
+
+	@Override
+	public <T> long queryForLong(Class<T> clazz, AggregateConditionInterface condition) {
+		
+		JdbcSimpleQueryForLong<T> query = new JdbcSimpleQueryForLong<>(condition);
+		query.setRepository(repository);
+		
+		return query.queryForLong();
 	}
 
 	@Override
