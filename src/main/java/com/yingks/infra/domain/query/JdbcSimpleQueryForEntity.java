@@ -9,8 +9,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 
-import com.yingks.infra.domain.AggregateConditionInterface;
 import com.yingks.infra.domain.data.EntitySpecification;
+import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.utils.CollectionUtil;
 
 
@@ -33,7 +33,7 @@ public class JdbcSimpleQueryForEntity<T> extends JdbcAbstractQuery<T> implements
 		this.key = key;
 	}
 	
-	public JdbcSimpleQueryForEntity(AggregateConditionInterface condition )
+	public JdbcSimpleQueryForEntity(FilterInterface condition )
 	{
 		this();
 		this.selectedfieldNames = condition.fetchFieldNames();

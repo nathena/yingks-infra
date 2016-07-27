@@ -3,7 +3,7 @@ package com.yingks.infra.domain.query;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.yingks.infra.domain.AggregateConditionInterface;
+import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.utils.CollectionUtil;
 
 public class JdbcSimpleQueryForLong<T> extends JdbcAbstractQuery<T> implements QueryForLongInterface<T> {
@@ -11,7 +11,7 @@ public class JdbcSimpleQueryForLong<T> extends JdbcAbstractQuery<T> implements Q
 	private String where = "";
 	private Map<String,Object> paramMap = new HashMap<String, Object>();
 	
-	public JdbcSimpleQueryForLong(AggregateConditionInterface condition )
+	public JdbcSimpleQueryForLong(FilterInterface condition )
 	{
 		super();
 		

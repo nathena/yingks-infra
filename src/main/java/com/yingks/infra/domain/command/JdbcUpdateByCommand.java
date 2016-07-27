@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.yingks.infra.domain.AggregateConditionInterface;
+import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.utils.CollectionUtil;
 
 public class JdbcUpdateByCommand<T> extends JdbcAbstractCommand<T> implements CommandInterface<T> {
@@ -13,14 +13,14 @@ public class JdbcUpdateByCommand<T> extends JdbcAbstractCommand<T> implements Co
 	private String where = "";
 	private Map<String,Object> paramMap = new HashMap<String, Object>();
 	
-	public JdbcUpdateByCommand(T entity, AggregateConditionInterface condition)
+	public JdbcUpdateByCommand(T entity, FilterInterface filter)
 	{
 		super(entity);
-		this.where = condition.filterCondition();
+		this.where = filter.filterCondition();
 		
-		if(!CollectionUtil.isEmpty(condition.filterConditionNamedParams()))
+		if(!CollectionUtil.isEmpty(filter.filterConditionNamedParams()))
 		{
-			paramMap.putAll(condition.filterConditionNamedParams());
+			paramMap.putAll(filter.filterConditionNamedParams());
 		}
 	}
 	

@@ -3,7 +3,7 @@ package com.yingks.infra.domain.command;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.yingks.infra.domain.AggregateConditionInterface;
+import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.utils.CollectionUtil;
 
 public class JdbcRemoveByCommand<T> extends JdbcAbstractCommand<T> implements CommandInterface<T> {
@@ -11,15 +11,15 @@ public class JdbcRemoveByCommand<T> extends JdbcAbstractCommand<T> implements Co
 	private String where = "";
 	private Map<String,Object> paramMap = new HashMap<String, Object>();
 	
-	public JdbcRemoveByCommand(AggregateConditionInterface condition)
+	public JdbcRemoveByCommand(FilterInterface filter)
 	{
 		super();
 		
-		this.where = condition.filterCondition();
+		this.where = filter.filterCondition();
 		
-		if(!CollectionUtil.isEmpty(condition.filterConditionNamedParams()))
+		if(!CollectionUtil.isEmpty(filter.filterConditionNamedParams()))
 		{
-			paramMap.putAll(condition.filterConditionNamedParams());
+			paramMap.putAll(filter.filterConditionNamedParams());
 		}
 	}
 	

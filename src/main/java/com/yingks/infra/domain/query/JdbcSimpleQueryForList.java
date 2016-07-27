@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.yingks.infra.domain.AggregateConditionInterface;
+import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.utils.CollectionUtil;
 
 public class JdbcSimpleQueryForList<T> extends JdbcAbstractQuery<T> implements QueryForListInterface<T> {
@@ -13,7 +13,7 @@ public class JdbcSimpleQueryForList<T> extends JdbcAbstractQuery<T> implements Q
 	private String where = "";
 	private Map<String,Object> paramMap = new HashMap<String, Object>();
 	
-	public JdbcSimpleQueryForList(AggregateConditionInterface condition )
+	public JdbcSimpleQueryForList(FilterInterface condition )
 	{
 		super();
 		
