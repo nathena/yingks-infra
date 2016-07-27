@@ -2,6 +2,7 @@ package com.yingks.infra.domain;
 
 import java.util.List;
 
+import com.yingks.infra.domain.command.CommandInterface;
 import com.yingks.infra.domain.command.JdbcBatchInsertCommand;
 import com.yingks.infra.domain.command.JdbcInsertCommand;
 import com.yingks.infra.domain.command.JdbcRemoveByCommand;
@@ -26,6 +27,12 @@ public abstract class JdbcAggregateImpl implements AggregateInterface {
 
 	public void setRepository(JdbcGeneralRepository generalRepository) {
 		this.generalRepository = generalRepository;
+	}
+
+	
+	@Override
+	public <T> void executeCommand(CommandInterface<T> command) {
+		command.executeCommand();
 	}
 
 	@Override

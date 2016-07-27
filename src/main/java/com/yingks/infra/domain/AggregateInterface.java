@@ -2,8 +2,12 @@ package com.yingks.infra.domain;
 
 import java.util.List;
 
+import com.yingks.infra.domain.command.CommandInterface;
+
 public interface AggregateInterface {
 
+	public <T> void executeCommand(CommandInterface<T> command);
+	
 	public <T> void executeInsertCommand(T entity);
 	
 	public <T> void executeBatchInsertCommand(List<T> entitys);
