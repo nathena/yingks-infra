@@ -17,11 +17,11 @@ public class JdbcSimpleQueryForList<T> extends JdbcAbstractQuery<T> implements Q
 	{
 		super();
 		
-		this.selectedfieldNames = condition.fetchFieldNames();
-		this.where = condition.filterCondition();
-		if(!CollectionUtil.isEmpty(condition.filterConditionNamedParams()))
+		this.selectedfieldNames = condition.filterFields();
+		this.where = condition.filter();
+		if(!CollectionUtil.isEmpty(condition.filterParams()))
 		{
-			paramMap.putAll(condition.filterConditionNamedParams());
+			paramMap.putAll(condition.filterParams());
 		}
 	}
 	

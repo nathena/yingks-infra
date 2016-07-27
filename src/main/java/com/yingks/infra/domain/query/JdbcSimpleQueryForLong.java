@@ -15,10 +15,10 @@ public class JdbcSimpleQueryForLong<T> extends JdbcAbstractQuery<T> implements Q
 	{
 		super();
 		
-		this.where = condition.filterCondition();
-		if(!CollectionUtil.isEmpty(condition.filterConditionNamedParams()))
+		this.where = condition.filter();
+		if(!CollectionUtil.isEmpty(condition.filterParams()))
 		{
-			paramMap.putAll(condition.filterConditionNamedParams());
+			paramMap.putAll(condition.filterParams());
 		}
 	}
 	

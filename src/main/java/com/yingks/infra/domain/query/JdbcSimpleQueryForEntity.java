@@ -36,11 +36,11 @@ public class JdbcSimpleQueryForEntity<T> extends JdbcAbstractQuery<T> implements
 	public JdbcSimpleQueryForEntity(FilterInterface condition )
 	{
 		this();
-		this.selectedfieldNames = condition.fetchFieldNames();
-		this.where = condition.filterCondition();
-		if(!CollectionUtil.isEmpty(condition.filterConditionNamedParams()))
+		this.selectedfieldNames = condition.filterFields();
+		this.where = condition.filter();
+		if(!CollectionUtil.isEmpty(condition.filterParams()))
 		{
-			paramMap.putAll(condition.filterConditionNamedParams());
+			paramMap.putAll(condition.filterParams());
 		}
 	}
 	

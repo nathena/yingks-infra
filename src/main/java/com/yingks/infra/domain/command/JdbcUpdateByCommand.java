@@ -16,11 +16,11 @@ public class JdbcUpdateByCommand<T> extends JdbcAbstractCommand<T> implements Co
 	public JdbcUpdateByCommand(T entity, FilterInterface filter)
 	{
 		super(entity);
-		this.where = filter.filterCondition();
+		this.where = filter.filter();
 		
-		if(!CollectionUtil.isEmpty(filter.filterConditionNamedParams()))
+		if(!CollectionUtil.isEmpty(filter.filterParams()))
 		{
-			paramMap.putAll(filter.filterConditionNamedParams());
+			paramMap.putAll(filter.filterParams());
 		}
 	}
 	

@@ -15,11 +15,11 @@ public class JdbcRemoveByCommand<T> extends JdbcAbstractCommand<T> implements Co
 	{
 		super();
 		
-		this.where = filter.filterCondition();
+		this.where = filter.filter();
 		
-		if(!CollectionUtil.isEmpty(filter.filterConditionNamedParams()))
+		if(!CollectionUtil.isEmpty(filter.filterParams()))
 		{
-			paramMap.putAll(filter.filterConditionNamedParams());
+			paramMap.putAll(filter.filterParams());
 		}
 	}
 	

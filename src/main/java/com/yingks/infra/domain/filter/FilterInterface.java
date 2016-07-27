@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface FilterInterface {
 
-	public List<String> fetchFieldNames();
-	public String filterCondition();
-	public Map<String,Object> filterConditionNamedParams();
+	public List<String> filterFields();
+	public String filter();
+	public Map<String,Object> filterParams();
 }
