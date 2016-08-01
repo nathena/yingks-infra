@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.utils.CollectionUtil;
+import com.yingks.infra.utils.StringUtil;
 
 public class JdbcSimpleQueryForLong<T> extends JdbcAbstractQuery<T> implements QueryForLongInterface<T> {
 
@@ -26,7 +27,10 @@ public class JdbcSimpleQueryForLong<T> extends JdbcAbstractQuery<T> implements Q
 	public long queryForLong() 
 	{
 		StringBuilder namedSql = new StringBuilder(" select count(1) ");
-		namedSql.append(" from `").append(entityClass.tableName).append("` where ").append(where);
+		namedSql.append(" from `").append(entityClass.tableName).append("` where 1 ");
+		
+		if(!StringUtil.isEmpty(where))
+			namedSql.append("AND (").append(where).append(")");
 		
 		return repository.queryForLong(namedSql.toString(), paramMap);
 	}

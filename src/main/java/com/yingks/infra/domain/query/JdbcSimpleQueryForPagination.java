@@ -7,6 +7,7 @@ import java.util.Map;
 import com.yingks.infra.domain.Pagination;
 import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.utils.CollectionUtil;
+import com.yingks.infra.utils.StringUtil;
 
 public class JdbcSimpleQueryForPagination<T> extends JdbcAbstractQuery<T> implements QueryForPaginationInterface<T> {
 
@@ -53,7 +54,10 @@ public class JdbcSimpleQueryForPagination<T> extends JdbcAbstractQuery<T> implem
 			namedSql.append(" * ");
 		}
 		
-		namedSql.append(" from `").append(entityClass.tableName).append("` where ").append(where);
+		namedSql.append(" from `").append(entityClass.tableName).append("` where 1 ");
+		
+		if(!StringUtil.isEmpty(where))
+			namedSql.append("AND (").append(where).append(")");
 		
 		return repository.getList(entityClass.clazz, namedSql.toString(),paramMap);
 	}
@@ -61,7 +65,10 @@ public class JdbcSimpleQueryForPagination<T> extends JdbcAbstractQuery<T> implem
 	protected long total() {
 		
 		StringBuilder namedSql = new StringBuilder(" select count(1) ");
-		namedSql.append(" from `").append(entityClass.tableName).append("` where ").append(where);
+		namedSql.append(" from `").append(entityClass.tableName).append("` where 1 ");
+		
+		if(!StringUtil.isEmpty(where))
+			namedSql.append("AND (").append(where).append(")");
 		
 		return repository.queryForLong(namedSql.toString(), paramMap);
 	}

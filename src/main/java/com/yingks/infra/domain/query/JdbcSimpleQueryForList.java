@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.utils.CollectionUtil;
+import com.yingks.infra.utils.StringUtil;
 
 public class JdbcSimpleQueryForList<T> extends JdbcAbstractQuery<T> implements QueryForListInterface<T> {
 
@@ -43,7 +44,10 @@ public class JdbcSimpleQueryForList<T> extends JdbcAbstractQuery<T> implements Q
 			namedSql.append(" * ");
 		}
 		
-		namedSql.append(" from `").append(entityClass.tableName).append("` where ").append(where);
+		namedSql.append(" from `").append(entityClass.tableName).append("` where 1 ");
+		
+		if(!StringUtil.isEmpty(where))
+			namedSql.append("AND (").append(where).append(")");
 		
 		return repository.getList(entityClass.clazz, namedSql.toString(),paramMap);
 	}
