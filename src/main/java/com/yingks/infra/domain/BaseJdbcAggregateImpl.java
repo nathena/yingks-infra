@@ -151,4 +151,23 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 		
 		return query.queryForPagination();
 	}
+
+	@Override
+	public <T> Pagination<T> queryForPagination(Class<T> clazz, FilterInterface filter, int limit) {
+		JdbcSimpleQueryForPagination<T> query = new JdbcSimpleQueryForPagination<T>(clazz,filter,limit);
+		query.setRepository(this.getRepository());
+		
+		return query.queryForPagination();
+	}
+
+	@Override
+	public <T> Pagination<T> queryForPagination(Class<T> clazz, FilterInterface filter, int page, int pageSize) {
+		
+		JdbcSimpleQueryForPagination<T> query = new JdbcSimpleQueryForPagination<T>(clazz,filter, (page - 1) * pageSize, pageSize);
+		query.setRepository(this.getRepository());
+		
+		return query.queryForPagination();
+	}
+	
+	
 }

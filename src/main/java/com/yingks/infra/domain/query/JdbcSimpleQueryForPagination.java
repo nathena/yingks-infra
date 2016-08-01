@@ -20,6 +20,19 @@ public class JdbcSimpleQueryForPagination<T> extends JdbcAbstractQuery<T> implem
 		super(clazz, condition);
 	}
 	
+	public JdbcSimpleQueryForPagination(Class<T> clazz,FilterInterface condition, int offset, int rowSize)
+	{
+		super(clazz, condition);
+		this.offset = offset;
+		this.rowSize = rowSize;
+	}
+	
+	public JdbcSimpleQueryForPagination(Class<T> clazz,FilterInterface condition, int limit)
+	{
+		super(clazz, condition);
+		this.offset = limit;
+	}
+	
 	@Override
 	public Pagination<T> queryForPagination()
 	{
