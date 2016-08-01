@@ -13,7 +13,7 @@ public class JdbcUpdateByCommand<T> extends JdbcAbstractCommand<T> implements Co
 	private String where = "";
 	private Map<String,Object> paramMap = new HashMap<String, Object>();
 	
-	public JdbcUpdateByCommand(T entity, FilterInterface filter)
+	public JdbcUpdateByCommand(T entity, FilterInterface<T> filter)
 	{
 		super(entity);
 		this.where = filter.filter();
