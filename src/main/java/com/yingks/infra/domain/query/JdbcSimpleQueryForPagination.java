@@ -5,26 +5,19 @@ import java.util.List;
 import java.util.Map;
 
 import com.yingks.infra.domain.Pagination;
+import com.yingks.infra.domain.filter.AbstractFilter;
+import com.yingks.infra.domain.filter.AbstractDirectSQLQuery;
 import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.utils.CollectionUtil;
 import com.yingks.infra.utils.StringUtil;
 
 public class JdbcSimpleQueryForPagination<T> extends JdbcAbstractQuery<T> implements QueryForPaginationInterface<T> {
-
-	private List<String> selectedfieldNames;
-	private String where = "";
-	private Map<String,Object> paramMap = new HashMap<String, Object>();
+	private Integer offset;
+	private Integer rowSize;
 	
-	public JdbcSimpleQueryForPagination(Class<T> clazz,FilterInterface<T> condition )
+	public JdbcSimpleQueryForPagination(Class<T> clazz,FilterInterface condition )
 	{
-		super(clazz);
-		
-		this.selectedfieldNames = condition.filterFields();
-		this.where = condition.filter();
-		if(!CollectionUtil.isEmpty(condition.filterParams()))
-		{
-			paramMap.putAll(condition.filterParams());
-		}
+		super(clazz, condition);
 	}
 	
 	@Override
@@ -39,37 +32,69 @@ public class JdbcSimpleQueryForPagination<T> extends JdbcAbstractQuery<T> implem
 	}
 
 	protected List<T> queryForList() {
-		StringBuilder namedSql = new StringBuilder(" select ");
-		String sp=" ";
-		if( !CollectionUtil.isEmpty(selectedfieldNames) )
-		{
-			for(String fieldName:selectedfieldNames)
-			{
-				namedSql.append(sp).append("`").append(fieldName).append("`");
-				sp = ", ";
+		FilterInterface queryConfig = getQueryConfig();
+		if(queryConfig instanceof AbstractDirectSQLQuery) {
+			AbstractDirectSQLQuery query = (AbstractDirectSQLQuery)queryConfig;
+			return repository.getList(entityClass.clazz, query.sql(), query.filterParams());
+		} else if(queryConfig instanceof AbstractFilter) {
+			AbstractFilter query = (AbstractFilter)queryConfig;
+			
+			Map<String, Object> namedParams = query.filterParams();
+			StringBuilder namedSql = new StringBuilder(" select ");
+			String sp=" ";
+			if(!CollectionUtil.isEmpty(query.filterFields()))
+				for(String fieldName: query.filterFields()) {
+					String columnName = entityClass.fieldToColumnMap.get(fieldName);
+					columnName = StringUtil.isEmpty(columnName) ? fieldName : columnName;
+					namedSql.append(sp).append("`").append(columnName).append("`");
+					sp = ", ";
+				}
+			else
+				namedSql.append(" * ");
+			
+			namedSql.append(" from `").append(entityClass.tableName).append("` where 1 ");
+			
+			if(!StringUtil.isEmpty(query.filter()))
+				namedSql.append("AND (").append(query.filter()).append(")");
+			
+			if(!StringUtil.isEmpty(query.order()))
+				namedSql.append(" ORDER BY ").append(query.order());
+			
+			if(offset != null && rowSize != null) {
+				namedSql.append("LIMIT :__offset, :__rowSize");
+				if(namedParams == null) namedParams = new HashMap<>();
+				namedParams.put("__offset", offset);
+				namedParams.put("__rowSize", rowSize);
+			} else if(offset != null) {
+				namedSql.append("LIMIT :__offset");
+				if(namedParams == null) namedParams = new HashMap<>();
+				namedParams.put("__offset", offset);
 			}
+			
+			return repository.getList(entityClass.clazz, namedSql.toString(), namedParams);
+		} else {
+			throw new QueryException(QueryExceptionMsg.BASE_JDBC_QUERY_ILLEGAL);
 		}
-		else
-		{
-			namedSql.append(" * ");
-		}
-		
-		namedSql.append(" from `").append(entityClass.tableName).append("` where 1 ");
-		
-		if(!StringUtil.isEmpty(where))
-			namedSql.append("AND (").append(where).append(")");
-		
-		return repository.getList(entityClass.clazz, namedSql.toString(),paramMap);
 	}
 
 	protected long total() {
 		
-		StringBuilder namedSql = new StringBuilder(" select count(1) ");
-		namedSql.append(" from `").append(entityClass.tableName).append("` where 1 ");
-		
-		if(!StringUtil.isEmpty(where))
-			namedSql.append("AND (").append(where).append(")");
-		
-		return repository.queryForLong(namedSql.toString(), paramMap);
+		FilterInterface queryConfig = getQueryConfig();
+		if(queryConfig instanceof AbstractDirectSQLQuery) {
+			AbstractDirectSQLQuery query = (AbstractDirectSQLQuery)queryConfig;
+			return repository.queryForLong(query.sql(), query.filterParams());
+		} else if(queryConfig instanceof AbstractFilter) {
+			AbstractFilter query = (AbstractFilter)queryConfig;
+			
+			StringBuilder namedSql = new StringBuilder(" select count(1) ");
+			namedSql.append(" from `").append(entityClass.tableName).append("` where 1 ");
+			
+			if(!StringUtil.isEmpty(query.filter()))
+				namedSql.append("AND (").append(query.filter()).append(")");
+			
+			return repository.queryForLong(namedSql.toString(), query.filterParams());
+		} else {
+			throw new QueryException(QueryExceptionMsg.BASE_JDBC_QUERY_ILLEGAL);
+		}
 	}
 }

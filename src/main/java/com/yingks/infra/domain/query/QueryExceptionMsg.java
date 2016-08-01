@@ -7,7 +7,8 @@ public enum QueryExceptionMsg {
 	BASE_JDBC_CREATE("infra.ex.jdbc.create","JDBC创建对象时执行sql异常"),
 	BASE_JDBC_UPDATE("infra.ex.jdbc.update","JDBC更新对象时执行sql异常"),
 	BASE_JDBC_DELETE("infra.ex.jdbc.delete","JDBC删除对象时执行sql异常"),
-	BASE_JDBC_QUERY("infra.ex.jdbc.query","JDBC查询对象时执行sql异常");
+	BASE_JDBC_QUERY("infra.ex.jdbc.query","JDBC查询对象时执行sql异常"),
+	BASE_JDBC_QUERY_ILLEGAL("infra.ex.jdbc.query.illegal","无法执行的查询请求");
 	
 	private String code;
 	private String msg;

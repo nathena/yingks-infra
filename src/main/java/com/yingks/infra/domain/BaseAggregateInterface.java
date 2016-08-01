@@ -15,22 +15,24 @@ public interface BaseAggregateInterface {
 	
 	public <T> void executeUpdateCommand(T entity);
 	
-	public <T> void executeUpdateByCommand(T entity,FilterInterface<T> filter);
+	public <T> void executeUpdateByCommand(T entity,FilterInterface filter);
 	
 	public <T> void executeRemoveCommand(T entity);
 	
 	public <T> void executeRemoveByIdCommand(Class<T> clazz,Object idVal);
 	
-	public <T> void executeRemoveByCommand(Class<T> clazz,FilterInterface<T> filter);
+	public <T> void executeRemoveByCommand(Class<T> clazz,FilterInterface filter);
 	
 	public <T> void executeStoreCommand(T entity);
 	
 	public <T> T queryForEntity(Class<T> clazz,Object idVal);
-	public <T> T queryForEntity(Class<T> clazz,FilterInterface<T> filter);
+	public <T> T queryForEntity(Class<T> clazz,FilterInterface filter);
 	
-	public <T> List<T> queryForList(Class<T> clazz,FilterInterface<T> filter);
+	public <T> List<T> queryForList(Class<T> clazz,FilterInterface filter);
+	public <T> List<T> queryForList(Class<T> clazz, FilterInterface filter, int limit);
+	public <T> List<T> queryForList(Class<T> clazz, FilterInterface filter, int page, int pageSize);
 	
-	public <T> long queryForLong(Class<T> clazz,FilterInterface<T> filter);
+	public <T> long queryForLong(Class<T> clazz,FilterInterface filter);
 	
-	public <T> Pagination<T> queryForPagination(Class<T> clazz,FilterInterface<T> filter);
+	public <T> Pagination<T> queryForPagination(Class<T> clazz,FilterInterface filter);
 }

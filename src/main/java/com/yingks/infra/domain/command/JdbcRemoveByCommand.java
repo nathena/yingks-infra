@@ -1,37 +1,38 @@
 package com.yingks.infra.domain.command;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.yingks.infra.domain.filter.AbstractFilter;
+import com.yingks.infra.domain.filter.AbstractDirectSQLQuery;
 import com.yingks.infra.domain.filter.FilterInterface;
-import com.yingks.infra.utils.CollectionUtil;
+import com.yingks.infra.utils.StringUtil;
 
 public class JdbcRemoveByCommand<T> extends JdbcAbstractCommand<T> implements CommandInterface<T> {
-
-	private String where = "";
-	private Map<String,Object> paramMap = new HashMap<String, Object>();
 	
-	public JdbcRemoveByCommand(Class<T> clazz,FilterInterface<T> filter)
+	public JdbcRemoveByCommand(Class<T> clazz,FilterInterface filter)
 	{
-		super(clazz);
-		
-		this.where = filter.filter();
-		
-		if(!CollectionUtil.isEmpty(filter.filterParams()))
-		{
-			paramMap.putAll(filter.filterParams());
-		}
+		super(clazz, filter);
 	}
 	
 	@Override
 	public void executeCommand() {
 		try 
 		{
-			StringBuilder sb = new StringBuilder(" delete from `");
-			sb.append(entityClass.tableName);
-			sb.append(" where ").append(where);
-			
-			repository.commandUpdate(sb.toString(),paramMap);
+			FilterInterface queryConfig = getQueryConfig();
+			if(queryConfig instanceof AbstractDirectSQLQuery) {
+				AbstractDirectSQLQuery query = (AbstractDirectSQLQuery)queryConfig;
+				repository.commandUpdate(query.sql(), query.filterParams());
+			} else if(queryConfig instanceof AbstractFilter) {
+				AbstractFilter query = (AbstractFilter)queryConfig;
+				
+				StringBuilder namedSql = new StringBuilder(" DELETE FROM `").append(entityClass.tableName).append("`");
+				namedSql.append(" WHERE 1 ");
+				
+				if(!StringUtil.isEmpty(query.filter()))
+					namedSql.append("AND (").append(query.filter()).append(")");
+				
+				repository.commandUpdate(namedSql.toString(), query.filterParams());
+			} else {
+				throw new CommandException(CommandExceptionMsg.BASE_JDBC_DELETE);
+			}
 		} 
 		catch(Exception e) 
 		{

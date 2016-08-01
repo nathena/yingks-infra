@@ -54,7 +54,7 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 	}
 
 	@Override
-	public <T> void executeUpdateByCommand(T entity, FilterInterface<T> filter) {
+	public <T> void executeUpdateByCommand(T entity, FilterInterface filter) {
 		JdbcUpdateByCommand<T> command = new JdbcUpdateByCommand<T>(entity, filter);
 		command.setRepository(this.getRepository());
 		command.executeCommand();
@@ -76,7 +76,7 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 	}
 
 	@Override
-	public <T> void executeRemoveByCommand(Class<T> clazz, FilterInterface<T> filter) {
+	public <T> void executeRemoveByCommand(Class<T> clazz, FilterInterface filter) {
 		JdbcRemoveByCommand<T> command = new JdbcRemoveByCommand<>(clazz,filter);
 		command.setRepository(this.getRepository());
 		command.executeCommand();
@@ -99,7 +99,7 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 	}
 
 	@Override
-	public <T> T queryForEntity(Class<T> clazz, FilterInterface<T> filter) {
+	public <T> T queryForEntity(Class<T> clazz, FilterInterface filter) {
 		
 		JdbcSimpleQueryForEntity<T> query = new JdbcSimpleQueryForEntity<T>(clazz,filter);
 		query.setRepository(this.getRepository());
@@ -108,7 +108,7 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 	}
 
 	@Override
-	public <T> List<T> queryForList(Class<T> clazz, FilterInterface<T> filter) {
+	public <T> List<T> queryForList(Class<T> clazz, FilterInterface filter) {
 		
 		JdbcSimpleQueryForList<T> query = new JdbcSimpleQueryForList<T>(clazz,filter);
 		query.setRepository(this.getRepository());
@@ -117,7 +117,25 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 	}
 
 	@Override
-	public <T> long queryForLong(Class<T> clazz, FilterInterface<T> filter) {
+	public <T> List<T> queryForList(Class<T> clazz, FilterInterface filter, int limit) {
+		
+		JdbcSimpleQueryForList<T> query = new JdbcSimpleQueryForList<T>(clazz, filter, limit);
+		query.setRepository(this.getRepository());
+		
+		return query.queryForList();
+	}
+	
+	@Override
+	public <T> List<T> queryForList(Class<T> clazz, FilterInterface filter, int page, int pageSize) {
+		
+		JdbcSimpleQueryForList<T> query = new JdbcSimpleQueryForList<T>(clazz, filter, (page - 1) * pageSize, pageSize);
+		query.setRepository(this.getRepository());
+		
+		return query.queryForList();
+	}
+	
+	@Override
+	public <T> long queryForLong(Class<T> clazz, FilterInterface filter) {
 		
 		JdbcSimpleQueryForLong<T> query = new JdbcSimpleQueryForLong<T>(clazz,filter);
 		query.setRepository(this.getRepository());
@@ -126,7 +144,7 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 	}
 
 	@Override
-	public <T> Pagination<T> queryForPagination(Class<T> clazz, FilterInterface<T> filter) {
+	public <T> Pagination<T> queryForPagination(Class<T> clazz, FilterInterface filter) {
 		
 		JdbcSimpleQueryForPagination<T> query = new JdbcSimpleQueryForPagination<T>(clazz,filter);
 		query.setRepository(this.getRepository());

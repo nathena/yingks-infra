@@ -8,6 +8,8 @@ public class Pagination<T> implements Serializable {
 	
 	private Long total = 0L;			//总数
 	private List<T> rows;				//行信息
+	private Integer pageSize = 0;
+	private Integer page = 0;
 	public Long getTotal() {
 		return total;
 	}
@@ -19,5 +21,22 @@ public class Pagination<T> implements Serializable {
 	}
 	public void setRows(List<T> rows) {
 		this.rows = rows;
+	}
+	public Integer getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(Integer pageSize) {
+		this.pageSize = pageSize;
+	}
+	public Integer getPage() {
+		return page;
+	}
+	public void setPage(Integer page) {
+		this.page = page;
+	}
+	public Integer getPageTotal() {
+		if(pageSize > 0)
+			return (int) Math.ceil(total / pageSize);
+		return 0;
 	}
 }
