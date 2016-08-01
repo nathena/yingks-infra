@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractFilter implements FilterInterface {
+public abstract class AbstractFilter<T> implements FilterInterface<T> {
 
 	protected List<String> fields = new ArrayList<>();
 	protected StringBuilder namedFitler = new StringBuilder();
