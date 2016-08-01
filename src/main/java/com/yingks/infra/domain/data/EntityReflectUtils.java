@@ -16,7 +16,7 @@ import javax.persistence.Id;
 
 import com.yingks.infra.utils.CollectionUtil;
 
-public class EntityClass {
+public class EntityReflectUtils {
 	
 	public static Map<Class<?>, ClassSpecification<?> > cached = new ConcurrentHashMap<>();
 	
@@ -33,7 +33,7 @@ public class EntityClass {
 	{
 		if( !cached.containsKey(clazz) )
 		{
-			cached.put(clazz, new ClassSpecification<T>());
+			cached.put(clazz, new ClassSpecification<T>(clazz));
 		}
 		
 		return (ClassSpecification<T>)cached.get(clazz);
@@ -81,10 +81,9 @@ public class EntityClass {
 		public final Set<String> idFields = new HashSet<String>();
 		public final Set<String> transientFields = new HashSet<String>();
 		
-		@SuppressWarnings("unchecked")
-		private ClassSpecification()
+		private ClassSpecification(Class<T> clazz)
 		{
-			this.clazz = (Class<T>)((ParameterizedType)this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];;
+			this.clazz = clazz;
 			if( EntitySpecification.isAnnotationPresent(clazz, Entity.class))
 			{
 				this.type = ClassSpecificationType.sql;

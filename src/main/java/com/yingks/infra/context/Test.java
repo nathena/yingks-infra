@@ -3,7 +3,7 @@ package com.yingks.infra.context;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.yingks.infra.domain.data.EntityClass;
+import com.yingks.infra.domain.data.EntityReflectUtils;
 
 public class Test{
 
@@ -14,15 +14,12 @@ public class Test{
 	public <T> void aa(List<T> clazz)
 	{
 		System.out.println( clazz.getClass() );
-		System.out.println(EntityClass.getClassGenricType(clazz.getClass()));
-		System.out.println(EntityClass.getClassGenricType(clazz.getClass()).getName());
 	}
 	
 	public <T> void aaa(T clazz)
 	{
 		System.out.println( clazz.getClass() );
-		System.out.println(EntityClass.getClassGenricType(clazz.getClass()));
-		System.out.println(EntityClass.getClassGenricType(clazz.getClass()).getName());
+		System.out.println( EntityReflectUtils.getEntityClass(clazz).clazz );
 	}
 	
 	public static void main(String[] arg)

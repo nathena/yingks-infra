@@ -1,9 +1,9 @@
 package com.yingks.infra.domain.command;
 
-import com.yingks.infra.domain.AbstractEntity;
+import com.yingks.infra.domain.data.AbstractEntityAware;
 import com.yingks.infra.domain.data.JdbcGeneralRepository;
 
-public abstract class JdbcAbstractCommand<T> extends AbstractEntity<T> implements CommandInterface<T> {
+public abstract class JdbcAbstractCommand<T> extends AbstractEntityAware<T> implements CommandInterface<T> {
 
 	protected JdbcGeneralRepository repository;
 	protected T entity;
