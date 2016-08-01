@@ -12,6 +12,8 @@ public class JdbcStoreCommand<T> extends JdbcAbstractCommand<T> implements Comma
 	
 	public JdbcStoreCommand(T entity)
 	{
+		super(entity);
+		
 		this.insert = new JdbcInsertCommand<T>(entity);
 		this.update = new JdbcUpdateCommand<T>(entity);
 	}

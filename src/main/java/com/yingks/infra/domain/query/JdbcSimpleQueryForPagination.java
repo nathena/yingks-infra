@@ -14,9 +14,9 @@ public class JdbcSimpleQueryForPagination<T> extends JdbcAbstractQuery<T> implem
 	private String where = "";
 	private Map<String,Object> paramMap = new HashMap<String, Object>();
 	
-	public JdbcSimpleQueryForPagination(FilterInterface condition )
+	public JdbcSimpleQueryForPagination(Class<T> clazz,FilterInterface<T> condition )
 	{
-		super();
+		super(clazz);
 		
 		this.selectedfieldNames = condition.filterFields();
 		this.where = condition.filter();

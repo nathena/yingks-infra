@@ -2,6 +2,7 @@ package com.yingks.infra.domain.data;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,10 +39,40 @@ public class EntityClass {
 		return (ClassSpecification<T>)cached.get(clazz);
 	}
 	
+	/** 
+     * 获得超类的参数类型，取第一个参数类型 
+     * @param <T> 类型参数 
+     * @param clazz 超类类型 
+     */  
+    @SuppressWarnings({"unchecked","rawtypes"})
+    public static <T> Class<T> getClassGenricType(final Class clazz) {  
+        return (Class<T>)getClassGenricType(clazz, 0);  
+    }  
+      
+    /** 
+     * 根据索引获得超类的参数类型 
+     * @param clazz 超类类型 
+     * @param index 索引 
+     */  
+    @SuppressWarnings({"rawtypes"})  
+    public static Class getClassGenricType(final Class clazz, final int index) {  
+        Type genType = clazz.getGenericSuperclass();  
+        if (!(genType instanceof ParameterizedType)) {
+            return Object.class;  
+        }  
+        Type[] params = ((ParameterizedType)genType).getActualTypeArguments();  
+        if (index >= params.length || index < 0) {  
+            return Object.class;  
+        }  
+        if (!(params[index] instanceof Class)) {
+            return Object.class;  
+        }  
+        return (Class) params[index];  
+    }
 	
 	public static class ClassSpecification<T>
 	{
-		public final Type type;
+		public final ClassSpecificationType type;
 		public final Class<T> clazz;
 		public final String tableName;
 		
@@ -56,11 +87,11 @@ public class EntityClass {
 			this.clazz = (Class<T>)((ParameterizedType)this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];;
 			if( EntitySpecification.isAnnotationPresent(clazz, Entity.class))
 			{
-				this.type = Type.sql;
+				this.type = ClassSpecificationType.sql;
 			}
 			else
 			{
-				this.type = Type._sql;//default
+				this.type = ClassSpecificationType._sql;//default
 			}
 			
 			this.tableName = EntitySpecification.getName(clazz);
@@ -94,7 +125,7 @@ public class EntityClass {
 		}
 	}
 	
-	public static enum Type
+	public static enum ClassSpecificationType
 	{
 		_sql,sql,nosql
 	}

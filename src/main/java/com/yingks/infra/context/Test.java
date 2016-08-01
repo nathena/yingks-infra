@@ -1,22 +1,39 @@
 package com.yingks.infra.context;
 
-public class Test extends Test1 {
+import java.util.ArrayList;
+import java.util.List;
+
+import com.yingks.infra.domain.data.EntityClass;
+
+public class Test{
 
 	public Test()
 	{
-		System.out.println("11111");
+	}
+	
+	public <T> void aa(List<T> clazz)
+	{
+		System.out.println( clazz.getClass() );
+		System.out.println(EntityClass.getClassGenricType(clazz.getClass()));
+		System.out.println(EntityClass.getClassGenricType(clazz.getClass()).getName());
+	}
+	
+	public <T> void aaa(T clazz)
+	{
+		System.out.println( clazz.getClass() );
+		System.out.println(EntityClass.getClassGenricType(clazz.getClass()));
+		System.out.println(EntityClass.getClassGenricType(clazz.getClass()).getName());
 	}
 	
 	public static void main(String[] arg)
 	{
-		new Test();
+		Test test = new Test();
+		test.aa(new ArrayList<Test4>());
+		test.aaa(new Test4());
 	}
 }
 
-class Test1
+class Test4
 {
-	public Test1()
-	{
-		System.out.println("2222");
-	}
+	
 }

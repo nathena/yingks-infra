@@ -11,9 +11,9 @@ public class JdbcRemoveByCommand<T> extends JdbcAbstractCommand<T> implements Co
 	private String where = "";
 	private Map<String,Object> paramMap = new HashMap<String, Object>();
 	
-	public JdbcRemoveByCommand(FilterInterface filter)
+	public JdbcRemoveByCommand(Class<T> clazz,FilterInterface filter)
 	{
-		super();
+		super(clazz);
 		
 		this.where = filter.filter();
 		

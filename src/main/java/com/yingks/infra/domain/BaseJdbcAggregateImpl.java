@@ -48,8 +48,8 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 	}
 
 	@Override
-	public <T> void executeBatchInsertCommand(List<T> entitys) {
-		JdbcBatchInsertCommand<T> command = new JdbcBatchInsertCommand<>(entitys);
+	public <T> void executeBatchInsertCommand(Class<T> clazz,List<T> entitys) {
+		JdbcBatchInsertCommand<T> command = new JdbcBatchInsertCommand<>(clazz,entitys);
 		command.setRepository(generalRepository);
 		command.executeCommand();
 	}
@@ -62,7 +62,7 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 	}
 
 	@Override
-	public <T> void executeUpdateByCommand(T entity, FilterInterface filter) {
+	public <T> void executeUpdateByCommand(T entity, FilterInterface<T> filter) {
 		JdbcUpdateByCommand<T> command = new JdbcUpdateByCommand<T>(entity, filter);
 		command.setRepository(generalRepository);
 		command.executeCommand();
@@ -78,14 +78,14 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 	@Override
 	public <T> void executeRemoveByIdCommand(Class<T> clazz,Object idVal) {
 		
-		JdbcRemoveByIdCommand<T> command = new JdbcRemoveByIdCommand<>(idVal);
+		JdbcRemoveByIdCommand<T> command = new JdbcRemoveByIdCommand<>(clazz,idVal);
 		command.setRepository(generalRepository);
 		command.executeCommand();
 	}
 
 	@Override
-	public <T> void executeRemoveByCommand(Class<T> clazz, FilterInterface filter) {
-		JdbcRemoveByCommand<T> command = new JdbcRemoveByCommand<>(filter);
+	public <T> void executeRemoveByCommand(Class<T> clazz, FilterInterface<T> filter) {
+		JdbcRemoveByCommand<T> command = new JdbcRemoveByCommand<>(clazz,filter);
 		command.setRepository(generalRepository);
 		command.executeCommand();
 	}
@@ -100,43 +100,43 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 	@Override
 	public <T> T queryForEntity(Class<T> clazz, Object idVal) {
 		
-		JdbcSimpleQueryForEntity<T> query = new JdbcSimpleQueryForEntity<>(idVal);
+		JdbcSimpleQueryForEntity<T> query = new JdbcSimpleQueryForEntity<T>(clazz,idVal);
 		query.setRepository(generalRepository);
 		
 		return query.queryForEntity();
 	}
 
 	@Override
-	public <T> T queryForEntity(Class<T> clazz, FilterInterface filter) {
+	public <T> T queryForEntity(Class<T> clazz, FilterInterface<T> filter) {
 		
-		JdbcSimpleQueryForEntity<T> query = new JdbcSimpleQueryForEntity<>(filter);
+		JdbcSimpleQueryForEntity<T> query = new JdbcSimpleQueryForEntity<T>(clazz,filter);
 		query.setRepository(generalRepository);
 		
 		return query.queryForEntity();
 	}
 
 	@Override
-	public <T> List<T> queryForList(Class<T> clazz, FilterInterface filter) {
+	public <T> List<T> queryForList(Class<T> clazz, FilterInterface<T> filter) {
 		
-		JdbcSimpleQueryForList<T> query = new JdbcSimpleQueryForList<>(filter);
+		JdbcSimpleQueryForList<T> query = new JdbcSimpleQueryForList<T>(clazz,filter);
 		query.setRepository(generalRepository);
 		
 		return query.queryForList();
 	}
 
 	@Override
-	public <T> long queryForLong(Class<T> clazz, FilterInterface filter) {
+	public <T> long queryForLong(Class<T> clazz, FilterInterface<T> filter) {
 		
-		JdbcSimpleQueryForLong<T> query = new JdbcSimpleQueryForLong<>(filter);
+		JdbcSimpleQueryForLong<T> query = new JdbcSimpleQueryForLong<T>(clazz,filter);
 		query.setRepository(generalRepository);
 		
 		return query.queryForLong();
 	}
 
 	@Override
-	public <T> Pagination<T> queryForPagination(Class<T> clazz, FilterInterface filter) {
+	public <T> Pagination<T> queryForPagination(Class<T> clazz, FilterInterface<T> filter) {
 		
-		JdbcSimpleQueryForPagination<T> query = new JdbcSimpleQueryForPagination<>(filter);
+		JdbcSimpleQueryForPagination<T> query = new JdbcSimpleQueryForPagination<T>(clazz,filter);
 		query.setRepository(generalRepository);
 		
 		return query.queryForPagination();

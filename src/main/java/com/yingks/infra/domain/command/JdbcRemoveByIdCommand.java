@@ -14,9 +14,9 @@ public class JdbcRemoveByIdCommand<T> extends JdbcAbstractCommand<T> implements 
 
 	private Object key;
 	
-	public JdbcRemoveByIdCommand(Object key)
+	public JdbcRemoveByIdCommand(Class<T> clazz,Object key)
 	{
-		super();
+		super(clazz);
 		
 		this.key = key;
 	}

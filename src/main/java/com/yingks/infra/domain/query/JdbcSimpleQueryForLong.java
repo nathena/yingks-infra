@@ -11,9 +11,9 @@ public class JdbcSimpleQueryForLong<T> extends JdbcAbstractQuery<T> implements Q
 	private String where = "";
 	private Map<String,Object> paramMap = new HashMap<String, Object>();
 	
-	public JdbcSimpleQueryForLong(FilterInterface condition )
+	public JdbcSimpleQueryForLong(Class<T> clazz,FilterInterface<T> condition )
 	{
-		super();
+		super(clazz);
 		
 		this.where = condition.filter();
 		if(!CollectionUtil.isEmpty(condition.filterParams()))

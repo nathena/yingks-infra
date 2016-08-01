@@ -21,9 +21,9 @@ public class JdbcBatchInsertCommand<T> extends JdbcAbstractCommand<T> implements
 
 	private List<T> entitys;
 	
-	public JdbcBatchInsertCommand(List<T> entitys)
+	public JdbcBatchInsertCommand(Class<T> clazz,List<T> entitys)
 	{
-		super();
+		super(clazz);
 		
 		if( entitys.size() == 0 ){
 			throw new CommandException(CommandExceptionMsg.COMMAND_ARG_MUST_ENTITY);

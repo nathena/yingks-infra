@@ -22,20 +22,16 @@ public class JdbcSimpleQueryForEntity<T> extends JdbcAbstractQuery<T> implements
 	private String where = "";
 	private Map<String,Object> paramMap = new HashMap<String, Object>();
 	
-	public JdbcSimpleQueryForEntity()
+	public JdbcSimpleQueryForEntity(Class<T> clazz,Object key)
 	{
-		
-	}
-	
-	public JdbcSimpleQueryForEntity(Object key)
-	{
-		this();
+		super(clazz);
 		this.key = key;
 	}
 	
-	public JdbcSimpleQueryForEntity(FilterInterface condition )
+	public JdbcSimpleQueryForEntity(Class<T> clazz,FilterInterface<T> condition )
 	{
-		this();
+		super(clazz);
+		
 		this.selectedfieldNames = condition.filterFields();
 		this.where = condition.filter();
 		if(!CollectionUtil.isEmpty(condition.filterParams()))

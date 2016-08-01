@@ -13,9 +13,9 @@ public class JdbcSimpleQueryForList<T> extends JdbcAbstractQuery<T> implements Q
 	private String where = "";
 	private Map<String,Object> paramMap = new HashMap<String, Object>();
 	
-	public JdbcSimpleQueryForList(FilterInterface condition )
+	public JdbcSimpleQueryForList(Class<T> clazz,FilterInterface<T> condition )
 	{
-		super();
+		super(clazz);
 		
 		this.selectedfieldNames = condition.filterFields();
 		this.where = condition.filter();
