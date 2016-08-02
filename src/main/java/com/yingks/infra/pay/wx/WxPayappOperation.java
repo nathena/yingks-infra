@@ -16,11 +16,10 @@ import com.yingks.infra.crypto.SHA1Coder;
 import com.yingks.infra.exception.NestedRuntimeException;
 import com.yingks.infra.pay.AbstractPayOperation;
 import com.yingks.infra.pay.PayChannelEnum;
+import com.yingks.infra.pay.PayNotifyAbleInterface;
 import com.yingks.infra.pay.PayStatusEnum;
-import com.yingks.infra.pay.PaymentOperationInterface;
 import com.yingks.infra.pay.TradeNotify;
 import com.yingks.infra.pay.TradeNotify.Type;
-import com.yingks.infra.pay.exception.PayException;
 import com.yingks.infra.utils.CollectionUtil;
 import com.yingks.infra.utils.DateTimeUtil;
 import com.yingks.infra.utils.HttpUtil;
@@ -40,7 +39,7 @@ public class WxPayappOperation extends AbstractPayOperation {
 	
 	private static String notifyUrl = WxConfig.appNotifyUrl;
 	
-	public WxPayappOperation(PaymentOperationInterface paymentOperation) {
+	public WxPayappOperation(PayNotifyAbleInterface paymentOperation) {
 		super(paymentOperation);
 	}
 
@@ -48,12 +47,6 @@ public class WxPayappOperation extends AbstractPayOperation {
 	public void toPay(HttpServletRequest request,HttpServletResponse response) throws Exception
 	{
 		logger.debug(" === wxpay app start === ");
-		
-		if( !paymentOperation.checkPaymentParams(request, response) )
-		{
-			logger.debug(" === wxpay app === 验证请求参数错误...... ");
-			throw new PayException("验证请求参数错误");
-		}
 		
 		JSONObject retJson = new JSONObject();
 		
@@ -224,15 +217,17 @@ public class WxPayappOperation extends AbstractPayOperation {
 
 			String out_trade_no = sortedMap.get("out_trade_no");
 			String transaction_id = sortedMap.get("transaction_id");
+			String total_fee = sortedMap.get("total_fee");
 			
 			TradeNotify msg = new TradeNotify();
 			msg.setChannel(PayChannelEnum.weixin);
 			msg.setStatus(PayStatusEnum.SUCCEES);
-			msg.setOutTradeNo(out_trade_no);
+			msg.setPaymentNo(out_trade_no);
 			msg.setTradeNo("wxpay"+transaction_id);
 			msg.setTradeStatus(PayStatusEnum.SUCCEES.name());
-			msg.setNotifyMoney("");
+			msg.setNotifyMoney(total_fee);
 			msg.setTradeType(Type.web);
+			msg.setMsg(JSONObject.toJSONString(sortedMap));
 			
 			paymentOperation.notify(msg);
 			

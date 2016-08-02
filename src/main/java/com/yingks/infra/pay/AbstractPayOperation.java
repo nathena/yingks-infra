@@ -13,9 +13,9 @@ public abstract class AbstractPayOperation {
 
 	private static Logger logger  = Logger.getLogger(AbstractPayOperation.class);
 	
-	protected PaymentOperationInterface paymentOperation;
+	protected PayNotifyAbleInterface paymentOperation;
 	
-	public AbstractPayOperation(PaymentOperationInterface paymentOperation)
+	public AbstractPayOperation(PayNotifyAbleInterface paymentOperation)
 	{
 		this.paymentOperation = paymentOperation;
 	}

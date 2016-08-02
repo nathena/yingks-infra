@@ -9,21 +9,28 @@ public class TradeNotify implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String outTradeNo;
+	private String paymentNo;
 	private String tradeNo;
 	private String tradeStatus;
 	private String notifyMoney;
+	private String msg;
 	
 	private Type tradeType;
 	
 	private PayStatusEnum status;
 	private PayChannelEnum channel;
 	
-	public String getOutTradeNo() {
-		return outTradeNo;
+	public String getMsg() {
+		return msg;
 	}
-	public void setOutTradeNo(String outTradeNo) {
-		this.outTradeNo = outTradeNo;
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+	public String getPaymentNo() {
+		return paymentNo;
+	}
+	public void setPaymentNo(String paymentNo) {
+		this.paymentNo = paymentNo;
 	}
 	public String getTradeNo() {
 		return tradeNo;

@@ -14,11 +14,10 @@ import com.alipay.util.AlipayNotify;
 import com.pay.alipay.sign.RSA;
 import com.yingks.infra.pay.AbstractPayOperation;
 import com.yingks.infra.pay.PayChannelEnum;
+import com.yingks.infra.pay.PayNotifyAbleInterface;
 import com.yingks.infra.pay.PayStatusEnum;
-import com.yingks.infra.pay.PaymentOperationInterface;
 import com.yingks.infra.pay.TradeNotify;
 import com.yingks.infra.pay.TradeNotify.Type;
-import com.yingks.infra.pay.exception.PayException;
 import com.yingks.infra.utils.NumberUtil;
 import com.yingks.infra.utils.StringUtil;
 
@@ -31,19 +30,13 @@ public class AlipayappOperation extends AbstractPayOperation  {
 	//服务器异步通知页面路径
 	private static String notify_url = AlipayConfig.app_notify_url;
 	
-	public AlipayappOperation(PaymentOperationInterface paymentOperation) {
+	public AlipayappOperation(PayNotifyAbleInterface paymentOperation) {
 		super(paymentOperation);
 	}
 
 	public void toPay(HttpServletRequest request,HttpServletResponse response) throws Exception
 	{
 		logger.debug(" === alipay app === 正在进入支付宝...... ");
-		
-		if( !paymentOperation.checkPaymentParams(request,response) )
-		{
-			logger.debug(" === alipay === 验证请求参数错误...... ");
-			throw new PayException("验证请求参数错误");
-		}
 		
 		String subject = new String(request.getParameter("WIDsubject").getBytes("ISO-8859-1"),"UTF-8");
 		String out_trade_no = new String(request.getParameter("WIDout_trade_no").getBytes("ISO-8859-1"),"UTF-8");
@@ -148,7 +141,7 @@ public class AlipayappOperation extends AbstractPayOperation  {
 					TradeNotify msg = new TradeNotify();
 					msg.setChannel(PayChannelEnum.alipay);
 					msg.setStatus(PayStatusEnum.SUCCEES);
-					msg.setOutTradeNo(out_trade_no);
+					msg.setPaymentNo(out_trade_no);
 					msg.setTradeNo(trade_no);
 					msg.setTradeStatus(trade_status);
 					msg.setNotifyMoney(notifyMoney);

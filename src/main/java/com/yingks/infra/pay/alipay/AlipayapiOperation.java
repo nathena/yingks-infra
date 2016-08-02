@@ -21,11 +21,10 @@ import com.alipay.util.AlipaySubmit;
 import com.alipay.util.UtilDate;
 import com.yingks.infra.pay.AbstractPayOperation;
 import com.yingks.infra.pay.PayChannelEnum;
+import com.yingks.infra.pay.PayNotifyAbleInterface;
 import com.yingks.infra.pay.PayStatusEnum;
-import com.yingks.infra.pay.PaymentOperationInterface;
 import com.yingks.infra.pay.TradeNotify;
 import com.yingks.infra.pay.TradeNotify.Type;
-import com.yingks.infra.pay.exception.PayException;
 import com.yingks.infra.utils.NumberUtil;
 
 public class AlipayapiOperation extends AbstractPayOperation {
@@ -56,19 +55,13 @@ public class AlipayapiOperation extends AbstractPayOperation {
 	private static String seller_email = AlipayConfig.seller_email;
 	//必填
 	
-	public AlipayapiOperation(PaymentOperationInterface paymentOperation) {
+	public AlipayapiOperation(PayNotifyAbleInterface paymentOperation) {
 		super(paymentOperation);
 	}
 	
 	public void toPay(HttpServletRequest request,HttpServletResponse response) throws Exception
 	{
 		logger.debug(" === alipay === 正在进入支付宝...... ");
-		
-		if( !paymentOperation.checkPaymentParams(request,response) )
-		{
-			logger.debug(" === alipay === 验证请求参数错误...... ");
-			throw new PayException("验证请求参数错误");
-		}
 		
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("WIDout_trade_no").getBytes("ISO-8859-1"),"UTF-8");
@@ -187,7 +180,7 @@ public class AlipayapiOperation extends AbstractPayOperation {
 					TradeNotify msg = new TradeNotify();
 					msg.setChannel(PayChannelEnum.alipay);
 					msg.setStatus(PayStatusEnum.SUCCEES);
-					msg.setOutTradeNo(out_trade_no);
+					msg.setPaymentNo(out_trade_no);
 					msg.setTradeNo(trade_no);
 					msg.setTradeStatus(trade_status);
 					msg.setNotifyMoney(notifyMoney);
@@ -247,7 +240,7 @@ public class AlipayapiOperation extends AbstractPayOperation {
 		
 		TradeNotify msg = new TradeNotify();
 		msg.setChannel(PayChannelEnum.alipay);
-		msg.setOutTradeNo(out_trade_no);
+		msg.setPaymentNo(out_trade_no);
 		msg.setStatus(PayStatusEnum.SUCCEES);
 		msg.setTradeNo(trade_no);
 		msg.setTradeStatus(trade_status);

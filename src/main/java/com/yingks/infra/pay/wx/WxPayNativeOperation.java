@@ -24,7 +24,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.yingks.infra.crypto.MD5Coder;
 import com.yingks.infra.pay.AbstractPayOperation;
-import com.yingks.infra.pay.PaymentOperationInterface;
+import com.yingks.infra.pay.PayNotifyAbleInterface;
 import com.yingks.infra.pay.exception.PayException;
 import com.yingks.infra.utils.HttpUtil;
 import com.yingks.infra.utils.MatrixToImageWriter;
@@ -43,7 +43,7 @@ public class WxPayNativeOperation extends AbstractPayOperation {
 	
 	private static String notifyUrl = WxConfig.nativeNotifyUrl;
 	
-	public WxPayNativeOperation(PaymentOperationInterface paymentOperation) {
+	public WxPayNativeOperation(PayNotifyAbleInterface paymentOperation) {
 		super(paymentOperation);
 	}
 

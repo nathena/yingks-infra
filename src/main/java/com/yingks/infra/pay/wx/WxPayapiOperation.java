@@ -22,7 +22,7 @@ import com.yingks.infra.exception.NestedRuntimeException;
 import com.yingks.infra.pay.AbstractPayOperation;
 import com.yingks.infra.pay.PayChannelEnum;
 import com.yingks.infra.pay.PayStatusEnum;
-import com.yingks.infra.pay.PaymentOperationInterface;
+import com.yingks.infra.pay.PayNotifyAbleInterface;
 import com.yingks.infra.pay.TradeNotify;
 import com.yingks.infra.pay.TradeNotify.Type;
 import com.yingks.infra.pay.exception.PayException;
@@ -46,27 +46,13 @@ public class WxPayapiOperation extends AbstractPayOperation {
 	private static String success_url = WxConfig.success_url;
 	private static String failed_url = WxConfig.failed_url;
 	
-	public WxPayapiOperation(PaymentOperationInterface paymentOperation) {
+	public WxPayapiOperation(PayNotifyAbleInterface paymentOperation) {
 		super(paymentOperation);
 	}
 
-	public void toPay(HttpServletRequest request,HttpServletResponse response) throws Exception
+	public void toPay(String out_trade_no,String subject,String total_fee, HttpServletRequest request,HttpServletResponse response) throws Exception
 	{
 		logger.debug(" === wxpay api start === ");
-		
-		if( !paymentOperation.checkPaymentParams(request,response) )
-		{
-			logger.debug(" === wxpay api === 验证请求参数错误...... ");
-			throw new PayException("验证请求参数错误");
-		}
-		
-		
-		//商户订单号
-		String out_trade_no = new String(request.getParameter("WIDout_trade_no").getBytes("ISO-8859-1"),"UTF-8");
-		//订单名称
-		String subject = new String(request.getParameter("WIDsubject"));
-		//付款金额
-		String total_fee = new String(request.getParameter("WIDtotal_fee").getBytes("ISO-8859-1"),"UTF-8");
 		
 		HttpSession session = request.getSession();
 		
@@ -356,14 +342,17 @@ public class WxPayapiOperation extends AbstractPayOperation {
 				return;
 			}
 			
+			String total_fee = orderqueryDataDoc.selectSingleNode("//xml/total_fee").getText();
+			
 			TradeNotify msg = new TradeNotify();
 			msg.setChannel(PayChannelEnum.weixin);
 			msg.setStatus(PayStatusEnum.SUCCEES);
-			msg.setOutTradeNo(out_trade_no);
+			msg.setPaymentNo(out_trade_no);
 			msg.setTradeNo("wxpay"+transaction_id);
 			msg.setTradeStatus(PayStatusEnum.SUCCEES.name());
-			msg.setNotifyMoney("");
+			msg.setNotifyMoney(total_fee);
 			msg.setTradeType(Type.web);
+			msg.setMsg(orderqueryDataDoc.asXML());
 			
 			paymentOperation.notify(msg);
 			
