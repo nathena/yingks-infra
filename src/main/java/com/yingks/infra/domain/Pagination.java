@@ -36,7 +36,7 @@ public class Pagination<T> implements Serializable {
 	}
 	public Integer getPageTotal() {
 		if(pageSize > 0)
-			return (int) Math.ceil(total / pageSize);
+			return (int) Math.ceil(total * 1.0 / pageSize);
 		return 0;
 	}
 }
