@@ -12,34 +12,34 @@ import org.apache.log4j.Logger;
 
 import com.alipay.util.AlipayNotify;
 import com.pay.alipay.sign.RSA;
-import com.yingks.infra.context.BaseControl;
+import com.yingks.infra.pay.AbstractPayOperation;
 import com.yingks.infra.pay.PayChannelEnum;
 import com.yingks.infra.pay.PayStatusEnum;
-import com.yingks.infra.pay.PayNotifyAbleInterface;
+import com.yingks.infra.pay.PaymentOperationInterface;
 import com.yingks.infra.pay.TradeNotify;
 import com.yingks.infra.pay.TradeNotify.Type;
 import com.yingks.infra.pay.exception.PayException;
 import com.yingks.infra.utils.NumberUtil;
 import com.yingks.infra.utils.StringUtil;
 
-public abstract class AlipayappController extends BaseControl implements PayNotifyAbleInterface  {
+public class AlipayappOperation extends AbstractPayOperation  {
 
-	private static Logger logger  = Logger.getLogger(AlipayappController.class);
+	private static Logger logger  = Logger.getLogger(AlipayappOperation.class);
 	
 	//privateKey
 	private static String privateKey = AlipayConfig.private_key;
 	//服务器异步通知页面路径
 	private static String notify_url = AlipayConfig.app_notify_url;
 	
-	public abstract boolean checkRequestParams(HttpServletRequest request,HttpServletResponse response);
-	@Override
-	public abstract void notify(TradeNotify msg);
-	
+	public AlipayappOperation(PaymentOperationInterface paymentOperation) {
+		super(paymentOperation);
+	}
+
 	public void toPay(HttpServletRequest request,HttpServletResponse response) throws Exception
 	{
 		logger.debug(" === alipay app === 正在进入支付宝...... ");
 		
-		if( !checkRequestParams(request,response) )
+		if( !paymentOperation.checkPaymentParams(request,response) )
 		{
 			logger.debug(" === alipay === 验证请求参数错误...... ");
 			throw new PayException("验证请求参数错误");
@@ -154,7 +154,7 @@ public abstract class AlipayappController extends BaseControl implements PayNoti
 					msg.setNotifyMoney(notifyMoney);
 					msg.setTradeType(Type.app);
 					
-					notify(msg);
+					paymentOperation.notify(msg);
 				}
 				catch(Exception e)
 				{

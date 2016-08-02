@@ -17,12 +17,12 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 
 import com.alibaba.fastjson.JSONObject;
-import com.yingks.infra.context.BaseControl;
 import com.yingks.infra.crypto.MD5Coder;
 import com.yingks.infra.exception.NestedRuntimeException;
+import com.yingks.infra.pay.AbstractPayOperation;
 import com.yingks.infra.pay.PayChannelEnum;
-import com.yingks.infra.pay.PayNotifyAbleInterface;
 import com.yingks.infra.pay.PayStatusEnum;
+import com.yingks.infra.pay.PaymentOperationInterface;
 import com.yingks.infra.pay.TradeNotify;
 import com.yingks.infra.pay.TradeNotify.Type;
 import com.yingks.infra.pay.exception.PayException;
@@ -30,9 +30,9 @@ import com.yingks.infra.utils.DateTimeUtil;
 import com.yingks.infra.utils.HttpUtil;
 import com.yingks.infra.utils.StringUtil;
 
-public abstract class WxapiController extends BaseControl implements PayNotifyAbleInterface {
+public class WxPayapiOperation extends AbstractPayOperation {
 
-	private static Logger logger  = Logger.getLogger(WxapiController.class);
+	private static Logger logger  = Logger.getLogger(WxPayapiOperation.class);
 	
 	private static String wxOrderUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 	
@@ -46,15 +46,15 @@ public abstract class WxapiController extends BaseControl implements PayNotifyAb
 	private static String success_url = WxConfig.success_url;
 	private static String failed_url = WxConfig.failed_url;
 	
-	public abstract boolean checkRequestParams(HttpServletRequest request,HttpServletResponse response);
-	@Override
-	public abstract void notify(TradeNotify msg);
-	
+	public WxPayapiOperation(PaymentOperationInterface paymentOperation) {
+		super(paymentOperation);
+	}
+
 	public void toPay(HttpServletRequest request,HttpServletResponse response) throws Exception
 	{
 		logger.debug(" === wxpay api start === ");
 		
-		if( !checkRequestParams(request,response) )
+		if( !paymentOperation.checkPaymentParams(request,response) )
 		{
 			logger.debug(" === wxpay api === 验证请求参数错误...... ");
 			throw new PayException("验证请求参数错误");
@@ -365,7 +365,7 @@ public abstract class WxapiController extends BaseControl implements PayNotifyAb
 			msg.setNotifyMoney("");
 			msg.setTradeType(Type.web);
 			
-			notify(msg);
+			paymentOperation.notify(msg);
 			
 			toResponse("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");
 		}

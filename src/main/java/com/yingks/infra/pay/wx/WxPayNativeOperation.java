@@ -22,18 +22,17 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.yingks.infra.context.BaseControl;
 import com.yingks.infra.crypto.MD5Coder;
-import com.yingks.infra.pay.PayNotifyAbleInterface;
-import com.yingks.infra.pay.TradeNotify;
+import com.yingks.infra.pay.AbstractPayOperation;
+import com.yingks.infra.pay.PaymentOperationInterface;
 import com.yingks.infra.pay.exception.PayException;
 import com.yingks.infra.utils.HttpUtil;
 import com.yingks.infra.utils.MatrixToImageWriter;
 import com.yingks.infra.utils.StringUtil;
 
-public abstract class WxNativeController extends BaseControl implements PayNotifyAbleInterface {
+public class WxPayNativeOperation extends AbstractPayOperation {
 
-	private static Logger logger  = Logger.getLogger(WxNativeController.class);
+	private static Logger logger  = Logger.getLogger(WxPayNativeOperation.class);
 	
 	private static String wxOrderUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 	
@@ -44,10 +43,10 @@ public abstract class WxNativeController extends BaseControl implements PayNotif
 	
 	private static String notifyUrl = WxConfig.nativeNotifyUrl;
 	
-	public abstract boolean checkRequestParams(HttpServletRequest request);
-	@Override
-	public abstract void notify(TradeNotify msg);
-	
+	public WxPayNativeOperation(PaymentOperationInterface paymentOperation) {
+		super(paymentOperation);
+	}
+
 	public void toPay_pattern_one(HttpServletRequest request,HttpServletResponse response) throws WriterException, IOException
 	{
 		logger.debug(" === wxpay native pattern one start === ");

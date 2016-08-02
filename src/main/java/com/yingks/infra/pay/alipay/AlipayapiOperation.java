@@ -19,18 +19,18 @@ import org.dom4j.DocumentHelper;
 import com.alipay.util.AlipayNotify;
 import com.alipay.util.AlipaySubmit;
 import com.alipay.util.UtilDate;
-import com.yingks.infra.context.BaseControl;
+import com.yingks.infra.pay.AbstractPayOperation;
 import com.yingks.infra.pay.PayChannelEnum;
 import com.yingks.infra.pay.PayStatusEnum;
-import com.yingks.infra.pay.PayNotifyAbleInterface;
+import com.yingks.infra.pay.PaymentOperationInterface;
 import com.yingks.infra.pay.TradeNotify;
 import com.yingks.infra.pay.TradeNotify.Type;
 import com.yingks.infra.pay.exception.PayException;
 import com.yingks.infra.utils.NumberUtil;
 
-public abstract class AlipayapiController extends BaseControl implements PayNotifyAbleInterface {
+public class AlipayapiOperation extends AbstractPayOperation {
 
-	private static Logger logger  = Logger.getLogger(AlipayapiController.class);
+	private static Logger logger  = Logger.getLogger(AlipayapiOperation.class);
 	
 	//支付宝网关地址
 	private static String ALIPAY_GATEWAY_NEW = "http://wappaygw.alipay.com/service/rest.htm?";
@@ -56,15 +56,15 @@ public abstract class AlipayapiController extends BaseControl implements PayNoti
 	private static String seller_email = AlipayConfig.seller_email;
 	//必填
 	
-	public abstract boolean checkRequestParams(HttpServletRequest request,HttpServletResponse response);
-	@Override
-	public abstract void notify(TradeNotify msg);
+	public AlipayapiOperation(PaymentOperationInterface paymentOperation) {
+		super(paymentOperation);
+	}
 	
 	public void toPay(HttpServletRequest request,HttpServletResponse response) throws Exception
 	{
 		logger.debug(" === alipay === 正在进入支付宝...... ");
 		
-		if( !checkRequestParams(request,response) )
+		if( !paymentOperation.checkPaymentParams(request,response) )
 		{
 			logger.debug(" === alipay === 验证请求参数错误...... ");
 			throw new PayException("验证请求参数错误");
@@ -193,7 +193,7 @@ public abstract class AlipayapiController extends BaseControl implements PayNoti
 					msg.setNotifyMoney(notifyMoney);
 					msg.setTradeType(Type.web);
 					
-					notify(msg);
+					paymentOperation.notify(msg);
 				}
 				catch(Exception e)
 				{
