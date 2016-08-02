@@ -166,7 +166,10 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 		JdbcSimpleQueryForPagination<T> query = new JdbcSimpleQueryForPagination<T>(clazz,filter, (page - 1) * pageSize, pageSize);
 		query.setRepository(this.getRepository());
 		
-		return query.queryForPagination();
+		Pagination<T> p = query.queryForPagination();
+		p.setPage(page);
+		p.setPageSize(pageSize);
+		return p;
 	}
 	
 	
