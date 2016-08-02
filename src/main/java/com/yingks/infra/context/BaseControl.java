@@ -69,7 +69,7 @@ public abstract class BaseControl {
 		return false;
 	}
 	
-	private void toResponse(Object content,String content_type)
+	protected void toResponse(Object content,String content_type)
 	{
 		RequestContext contexts = AppsContext.currentRequestContext();
 		HttpServletResponse response = contexts.getResponse();
