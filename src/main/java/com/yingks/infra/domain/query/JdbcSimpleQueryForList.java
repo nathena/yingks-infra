@@ -87,7 +87,7 @@ public class JdbcSimpleQueryForList<T> extends JdbcAbstractQuery<T> implements Q
 		}
 		catch(Exception e) 
 		{
-			throw new QueryException(QueryExceptionMsg.BASE_JDBC_QUERY_ILLEGAL);
+			throw new QueryException(QueryExceptionMsg.BASE_JDBC_QUERY, e);
 		}
 	}
 }
