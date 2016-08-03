@@ -1,9 +1,9 @@
 package com.yingks.infra.domain.query;
 
-import com.yingks.infra.domain.data.AbstractEntityAware;
-import com.yingks.infra.domain.data.JdbcGeneralRepository;
 import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.domain.filter.SimpleFilterImpl;
+import com.yingks.infra.domain.store.AbstractEntityAware;
+import com.yingks.infra.domain.store.JdbcGeneralRepository;
 
 public abstract class JdbcAbstractQuery<T> extends AbstractEntityAware<T>{
 

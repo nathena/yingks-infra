@@ -1,4 +1,4 @@
-package com.yingks.infra.domain.data;
+package com.yingks.infra.domain.store;
 
 import java.util.List;
 import java.util.Map;

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.yingks.infra.domain.data.EntitySpecification;
+import com.yingks.infra.domain.store.EntitySpecification;
 
 public class JdbcInsertCommand<T> extends JdbcAbstractCommand<T> implements CommandInterface<T> {
 

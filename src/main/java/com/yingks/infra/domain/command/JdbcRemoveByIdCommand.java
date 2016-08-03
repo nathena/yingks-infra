@@ -8,7 +8,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 
-import com.yingks.infra.domain.data.EntitySpecification;
+import com.yingks.infra.domain.store.EntitySpecification;
 
 public class JdbcRemoveByIdCommand<T> extends JdbcAbstractCommand<T> implements CommandInterface<T> {
 

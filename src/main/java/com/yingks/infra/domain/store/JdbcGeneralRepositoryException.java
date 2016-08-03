@@ -1,4 +1,4 @@
-package com.yingks.infra.domain.data;
+package com.yingks.infra.domain.store;
 
 import org.springframework.dao.DataAccessException;
 

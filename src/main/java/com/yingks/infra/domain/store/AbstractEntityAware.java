@@ -1,6 +1,6 @@
-package com.yingks.infra.domain.data;
+package com.yingks.infra.domain.store;
 
-import com.yingks.infra.domain.data.EntityReflectUtils.ClassSpecification;
+import com.yingks.infra.domain.store.EntityReflectUtils.ClassSpecification;
 
 public abstract class AbstractEntityAware<T> {
 

@@ -8,8 +8,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 
-import com.yingks.infra.domain.data.EntitySpecification;
 import com.yingks.infra.domain.filter.FilterInterface;
+import com.yingks.infra.domain.store.EntitySpecification;
 import com.yingks.infra.utils.CollectionUtil;
 import com.yingks.infra.utils.StringUtil;
 

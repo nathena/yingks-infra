@@ -1,9 +1,9 @@
 package com.yingks.infra.domain.command;
 
-import com.yingks.infra.domain.data.AbstractEntityAware;
-import com.yingks.infra.domain.data.JdbcGeneralRepository;
 import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.domain.filter.SimpleFilterImpl;
+import com.yingks.infra.domain.store.AbstractEntityAware;
+import com.yingks.infra.domain.store.JdbcGeneralRepository;
 
 public abstract class JdbcAbstractCommand<T> extends AbstractEntityAware<T> implements CommandInterface<T> {
 

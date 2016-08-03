@@ -12,12 +12,12 @@ import com.yingks.infra.domain.command.JdbcRemoveCommand;
 import com.yingks.infra.domain.command.JdbcStoreCommand;
 import com.yingks.infra.domain.command.JdbcUpdateByCommand;
 import com.yingks.infra.domain.command.JdbcUpdateCommand;
-import com.yingks.infra.domain.data.JdbcGeneralRepository;
 import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.domain.query.JdbcSimpleQueryForEntity;
 import com.yingks.infra.domain.query.JdbcSimpleQueryForList;
 import com.yingks.infra.domain.query.JdbcSimpleQueryForLong;
 import com.yingks.infra.domain.query.JdbcSimpleQueryForPagination;
+import com.yingks.infra.domain.store.JdbcGeneralRepository;
 
 public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 
