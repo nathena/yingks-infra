@@ -123,4 +123,15 @@ public abstract class AbstractFilter implements FilterInterface {
 	public String getOrder() {
 		return order.toString();
 	}
+	
+	protected void appendFilterSql(String sqlSeq) {
+		if(namedFitler.length() <= 0)
+			namedFitler.append(" (").append(sqlSeq).append(") ");//这里给每个过滤片段加上(),传进来的字符串就不需要再加括号了
+		else
+			namedFitler.append(" AND (").append(sqlSeq).append(")");//每个单独拼接起来的查询片段用且(AND)连接
+	}
+	
+	protected void appendNamedParam(String key, Object value) {
+		namedParams.put(key, value);
+	}
 }
