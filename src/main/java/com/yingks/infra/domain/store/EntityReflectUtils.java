@@ -84,18 +84,24 @@ public class EntityReflectUtils {
 		private ClassSpecification(Class<T> clazz)
 		{
 			this.clazz = clazz;
+			Class<? super T> tableAnotationClass = clazz; 
 			if( EntitySpecification.isAnnotationPresent(clazz, Entity.class))
 			{
 				this.type = ClassSpecificationType.sql;
+			}
+			else if(EntitySpecification.isAnnotationPresent(clazz.getSuperclass(), Entity.class))
+			{	//TODO 这里让继承JPA规范Entity的直接子类也可以直接操作(注意:仅直接继承可以),但是这样可能造成问题:如果直接子类很多可能会造成缓存的entityClass很多
+				tableAnotationClass = clazz.getSuperclass();
+				this.type = ClassSpecificationType._sql;//default
 			}
 			else
 			{
 				this.type = ClassSpecificationType._sql;//default
 			}
 			
-			this.tableName = EntitySpecification.getName(clazz);
+			this.tableName = EntitySpecification.getName(tableAnotationClass);
 			
-			Map<Class<?>,Set<Field>> accessor = EntitySpecification.getAllAccessor(clazz);
+			Map<Class<?>,Set<Field>> accessor = EntitySpecification.getAllAccessor(tableAnotationClass);
 			
 			Set<Field> ids = accessor.get(Id.class);
 			Set<Field> fields = accessor.get(Column.class);
