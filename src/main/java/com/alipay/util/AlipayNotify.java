@@ -10,8 +10,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 
 import com.alipay.config.AlipayConfig;
-import com.pay.alipay.sign.MD5;
-import com.pay.alipay.sign.RSA;
+import com.alipay.sign.MD5;
+import com.alipay.sign.RSA;
 
 
 /* *
