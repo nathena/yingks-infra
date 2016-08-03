@@ -13,7 +13,10 @@ public class JdbcSimpleQueryForPagination<T> extends JdbcAbstractQuery<T> implem
 		super(clazz, filter);
 		
 		jdbcSimpleQueryForList = new JdbcSimpleQueryForList<>(clazz, filter);
+		jdbcSimpleQueryForList.setRepository(getRepository());
+		
 		jdbcSimpleQueryForLong = new JdbcSimpleQueryForLong<>(clazz, filter);
+		jdbcSimpleQueryForLong.setRepository(getRepository());
 	}
 	
 	
