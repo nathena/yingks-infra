@@ -9,15 +9,15 @@ public abstract class JdbcAbstractCommand<T> extends AbstractEntityAware<T> impl
 
 	protected JdbcGeneralRepository repository;
 	protected T entity;
-	private FilterInterface queryConfig;//查询参数
+	private FilterInterface filter;//查询参数
 	
 	public JdbcAbstractCommand(Class<T> clazz) {
 		super(clazz);
 	}
 	
-	public JdbcAbstractCommand(Class<T> clazz, FilterInterface queryConfig) {
+	public JdbcAbstractCommand(Class<T> clazz, FilterInterface filter) {
 		super(clazz);
-		this.queryConfig = queryConfig;
+		this.filter = filter;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -28,17 +28,12 @@ public abstract class JdbcAbstractCommand<T> extends AbstractEntityAware<T> impl
 	}
 	
 	@SuppressWarnings("unchecked")
-	public JdbcAbstractCommand(T entity, FilterInterface queryConfig)
+	public JdbcAbstractCommand(T entity, FilterInterface filter)
 	{
 		this((Class<T>)entity.getClass());
+		
 		this.setEntity(entity);
-		this.queryConfig = queryConfig;
-	}
-	
-	public JdbcAbstractCommand(JdbcGeneralRepository repository, T entity)
-	{
-		this(entity);
-		this.setRepository(repository);
+		this.filter = filter;
 	}
 	
 	public JdbcGeneralRepository getRepository() {
@@ -57,7 +52,7 @@ public abstract class JdbcAbstractCommand<T> extends AbstractEntityAware<T> impl
 		this.entity = entity;
 	}
 	
-	protected FilterInterface getQueryConfig() {
-		return queryConfig == null ? SimpleFilterImpl.DEFAULT_QUERY_CONFIG : queryConfig;
+	protected FilterInterface getFilter() {
+		return filter == null ? SimpleFilterImpl.DEFAULT_FILTER : filter;
 	}
 }

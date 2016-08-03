@@ -7,37 +7,55 @@ import com.yingks.infra.utils.StringUtil;
 
 public class SimpleFilterImpl extends AbstractFilter {
 
-	public SimpleFilterImpl(String codition, Map<String,Object> namedParams)
+	public SimpleFilterImpl()
 	{
-		if( !StringUtil.isEmpty(codition) )
+		
+	}
+	
+	public SimpleFilterImpl(String namedFitler, Map<String,Object> namedParams)
+	{
+		_init(namedFitler,namedParams,null,null,null);
+	}
+	
+	public SimpleFilterImpl(String namedFitler, Map<String,Object> namedParams,String order)
+	{
+		_init(namedFitler,namedParams,order,null,null);
+	}
+	
+	public SimpleFilterImpl(String namedFitler, Map<String,Object> namedParams,String order, String group)
+	{
+		_init(namedFitler,namedParams,order,group,null);
+	}
+	
+	public SimpleFilterImpl(String namedFitler, Map<String,Object> namedParams,String order, String group, String having)
+	{
+		_init(namedFitler,namedParams,order,group,having);
+	}
+	
+	@Override
+	public void doFilter() {
+		
+	}
+
+	private void _init(String namedFitler, Map<String,Object> namedParams,String order, String group, String having)
+	{
+		if( !StringUtil.isEmpty(namedFitler) )
 		{
-			this.namedFitler.append(codition);
+			this.namedFitler.append(namedFitler);
 		}
 		
 		if(!CollectionUtil.isEmpty(namedParams))
 		{
 			this.namedParams.putAll(namedParams);
 		}
-	}
-	
-	public SimpleFilterImpl(String codition, String order, Map<String,Object> namedParams)
-	{
-		if( !StringUtil.isEmpty(codition) )
-		{
-			this.namedFitler.append(codition);
-		}
 		
-		if( !StringUtil.isEmpty(order) )
+		if(!CollectionUtil.isEmpty(namedParams))
 		{
 			this.order.append(order);
 		}
-		
-		if(!CollectionUtil.isEmpty(namedParams))
-		{
-			this.namedParams.putAll(namedParams);
-		}
 	}
 	
+	
 	//一个默认的查询配置
-	public final static FilterInterface DEFAULT_QUERY_CONFIG = new SimpleFilterImpl(null, null);
+	public final static FilterInterface DEFAULT_FILTER = new SimpleFilterImpl();
 }

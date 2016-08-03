@@ -9,21 +9,15 @@ public abstract class JdbcAbstractQuery<T> extends AbstractEntityAware<T>{
 
 	protected JdbcGeneralRepository repository;
 	
-	private FilterInterface queryConfig;//查询参数
+	private FilterInterface filter;//查询参数
 	
 	public JdbcAbstractQuery(Class<T> clazz) {
 		super(clazz);
 	}
 	
-	public JdbcAbstractQuery(Class<T> clazz, FilterInterface queryConfig) {
+	public JdbcAbstractQuery(Class<T> clazz, FilterInterface filter) {
 		super(clazz);
-		this.queryConfig = queryConfig;
-	}
-
-	public JdbcAbstractQuery(Class<T> clazz,JdbcGeneralRepository repository)
-	{
-		this(clazz);
-		this.setRepository(repository);
+		this.filter = filter;
 	}
 
 	public JdbcGeneralRepository getRepository() {
@@ -34,7 +28,7 @@ public abstract class JdbcAbstractQuery<T> extends AbstractEntityAware<T>{
 		this.repository = repository;
 	}
 	
-	protected FilterInterface getQueryConfig() {
-		return queryConfig == null ? SimpleFilterImpl.DEFAULT_QUERY_CONFIG : queryConfig;
+	protected FilterInterface getFilter() {
+		return filter == null ? SimpleFilterImpl.DEFAULT_FILTER : filter;
 	}
 }

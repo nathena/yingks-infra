@@ -1,36 +1,36 @@
 package com.yingks.infra.context;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.yingks.infra.domain.data.EntityReflectUtils;
-
-public class Test{
+public class Test extends Test4 {
 
 	public Test()
 	{
 	}
 	
-	public <T> void aa(List<T> clazz)
+	public Test(int a)
 	{
-		System.out.println( clazz.getClass() );
-	}
-	
-	public <T> void aaa(T clazz)
-	{
-		System.out.println( clazz.getClass() );
-		System.out.println( EntityReflectUtils.getEntityClass(clazz).clazz );
+		
 	}
 	
 	public static void main(String[] arg)
 	{
-		Test test = new Test();
-		test.aa(new ArrayList<Test4>());
-		test.aaa(new Test4());
+		Test test = new Test(1);
 	}
 }
 
 class Test4
 {
+	public Test4()
+	{
+		this.aaa();
+	}
 	
+	public Test4(int a)
+	{
+		System.out.println("121212");
+	}
+	
+	public void aaa()
+	{
+		System.out.println(this.getClass());
+	}
 }

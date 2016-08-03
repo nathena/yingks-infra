@@ -117,24 +117,6 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 	}
 
 	@Override
-	public <T> List<T> queryForList(Class<T> clazz, FilterInterface filter, int limit) {
-		
-		JdbcSimpleQueryForList<T> query = new JdbcSimpleQueryForList<T>(clazz, filter, limit);
-		query.setRepository(this.getRepository());
-		
-		return query.queryForList();
-	}
-	
-	@Override
-	public <T> List<T> queryForList(Class<T> clazz, FilterInterface filter, int page, int pageSize) {
-		
-		JdbcSimpleQueryForList<T> query = new JdbcSimpleQueryForList<T>(clazz, filter, (page - 1) * pageSize, pageSize);
-		query.setRepository(this.getRepository());
-		
-		return query.queryForList();
-	}
-	
-	@Override
 	public <T> long queryForLong(Class<T> clazz, FilterInterface filter) {
 		
 		JdbcSimpleQueryForLong<T> query = new JdbcSimpleQueryForLong<T>(clazz,filter);
@@ -151,26 +133,4 @@ public abstract class BaseJdbcAggregateImpl implements BaseAggregateInterface {
 		
 		return query.queryForPagination();
 	}
-
-	@Override
-	public <T> Pagination<T> queryForPagination(Class<T> clazz, FilterInterface filter, int limit) {
-		JdbcSimpleQueryForPagination<T> query = new JdbcSimpleQueryForPagination<T>(clazz,filter,limit);
-		query.setRepository(this.getRepository());
-		
-		return query.queryForPagination();
-	}
-
-	@Override
-	public <T> Pagination<T> queryForPagination(Class<T> clazz, FilterInterface filter, int page, int pageSize) {
-		
-		JdbcSimpleQueryForPagination<T> query = new JdbcSimpleQueryForPagination<T>(clazz,filter, (page - 1) * pageSize, pageSize);
-		query.setRepository(this.getRepository());
-		
-		Pagination<T> p = query.queryForPagination();
-		p.setPage(page);
-		p.setPageSize(pageSize);
-		return p;
-	}
-	
-	
 }

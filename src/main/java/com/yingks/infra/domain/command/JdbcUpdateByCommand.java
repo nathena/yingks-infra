@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.yingks.infra.domain.filter.AbstractFilter;
-import com.yingks.infra.domain.filter.AbstractDirectSQLQuery;
 import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.utils.StringUtil;
 
@@ -21,20 +19,19 @@ public class JdbcUpdateByCommand<T> extends JdbcAbstractCommand<T> implements Co
 	public void executeCommand() {
 		try 
 		{
-			FilterInterface queryConfig = getQueryConfig();
-			if(queryConfig instanceof AbstractDirectSQLQuery) {
-				AbstractDirectSQLQuery query = (AbstractDirectSQLQuery)queryConfig;
-				repository.commandUpdate(query.sql(), query.filterParams());
-			} else if(queryConfig instanceof AbstractFilter) {
-				AbstractFilter query = (AbstractFilter)queryConfig;
-				
+			FilterInterface filter = getFilter();
+			if( !StringUtil.isEmpty(filter.getDirectFilter()) ) 
+			{
+				repository.commandUpdate(filter.getDirectFilter(), filter.getNamedParams() );
+			}
+			else
+			{
 				StringBuilder namedSql = new StringBuilder("UPDATE `").append(entityClass.tableName).append("`");
 				namedSql.append(" SET ");
 				
 				String sp="";
 				String column = null; Method method = null; Object val = null;
-				Map<String, Object> paramMap = query.filterParams();
-				paramMap = paramMap == null ? new HashMap<>() : paramMap;
+				Map<String, Object> paramMap = new HashMap<>();
 				Set<String> fieldIter = entityClass.fieldToColumnMap.keySet();
 				for(String fieldName : fieldIter)
 				{
@@ -54,12 +51,14 @@ public class JdbcUpdateByCommand<T> extends JdbcAbstractCommand<T> implements Co
 				}
 				
 				namedSql.append(" WHERE 1 ");
-				if(!StringUtil.isEmpty(query.filter()))
-					namedSql.append("AND (").append(query.filter()).append(")");
+				if(!StringUtil.isEmpty(filter.getNamedFitler()))
+				{
+					namedSql.append("AND (").append(filter.getNamedFitler()).append(")");
+				}
+				
+				paramMap.putAll(filter.getNamedParams());
 				
 				repository.commandUpdate(namedSql.toString(), paramMap);
-			} else {
-				throw new CommandException(CommandExceptionMsg.BASE_JDBC_UPDATE);
 			}
 		} 
 		catch(Exception e) 

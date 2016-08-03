@@ -29,12 +29,8 @@ public interface BaseAggregateInterface {
 	public <T> T queryForEntity(Class<T> clazz,FilterInterface filter);
 	
 	public <T> List<T> queryForList(Class<T> clazz,FilterInterface filter);
-	public <T> List<T> queryForList(Class<T> clazz, FilterInterface filter, int limit);
-	public <T> List<T> queryForList(Class<T> clazz, FilterInterface filter, int page, int pageSize);
 	
 	public <T> long queryForLong(Class<T> clazz,FilterInterface filter);
 	
 	public <T> Pagination<T> queryForPagination(Class<T> clazz,FilterInterface filter);
-	public <T> Pagination<T> queryForPagination(Class<T> clazz,FilterInterface filter, int limit);
-	public <T> Pagination<T> queryForPagination(Class<T> clazz,FilterInterface filter, int page, int pageSize);
 }

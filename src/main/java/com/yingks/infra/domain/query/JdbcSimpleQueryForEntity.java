@@ -9,9 +9,6 @@ import java.util.Set;
 import javax.persistence.Column;
 
 import com.yingks.infra.domain.data.EntitySpecification;
-import com.yingks.infra.domain.data.JdbcGeneralRepositoryException;
-import com.yingks.infra.domain.filter.AbstractFilter;
-import com.yingks.infra.domain.filter.AbstractDirectSQLQuery;
 import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.utils.CollectionUtil;
 import com.yingks.infra.utils.StringUtil;
@@ -27,9 +24,9 @@ public class JdbcSimpleQueryForEntity<T> extends JdbcAbstractQuery<T> implements
 		this.key = key;
 	}
 	
-	public JdbcSimpleQueryForEntity(Class<T> clazz,FilterInterface condition )
+	public JdbcSimpleQueryForEntity(Class<T> clazz,FilterInterface filter )
 	{
-		super(clazz, condition);
+		super(clazz, filter);
 	}
 	
 	@Override
@@ -37,23 +34,27 @@ public class JdbcSimpleQueryForEntity<T> extends JdbcAbstractQuery<T> implements
 	{
 		try
 		{	
-			FilterInterface queryConfig = getQueryConfig();
-			if(queryConfig instanceof AbstractDirectSQLQuery) {
-				AbstractDirectSQLQuery query = (AbstractDirectSQLQuery)queryConfig;
-				return repository.getEntity(entityClass.clazz, query.sql(), query.filterParams());
-			} else if(queryConfig instanceof AbstractFilter) {
-				AbstractFilter query = (AbstractFilter)queryConfig;
-				
+			FilterInterface filter = getFilter();
+			if( !StringUtil.isEmpty(filter.getDirectFilter()) ) 
+			{
+				return repository.getEntity(entityClass.clazz, filter.getDirectFilter(), filter.getNamedParams() );
+			}
+			else
+			{
 				StringBuilder namedSql = new StringBuilder(" select ");
 				String sp=" ";
-				if( !CollectionUtil.isEmpty(query.filterFields()) ) {
-					for(String fieldName: query.filterFields()) {
+				if( !CollectionUtil.isEmpty(filter.getFields()) ) 
+				{
+					for(String fieldName: filter.getFields()) 
+					{
 						String columnName = entityClass.fieldToColumnMap.get(fieldName);
 						columnName = StringUtil.isEmpty(columnName) ? fieldName : columnName;
 						namedSql.append(sp).append("`").append(columnName).append("`");
 						sp = ", ";
 					}
-				} else {
+				} 
+				else 
+				{
 					namedSql.append(" * ");
 				}
 				
@@ -61,9 +62,9 @@ public class JdbcSimpleQueryForEntity<T> extends JdbcAbstractQuery<T> implements
 				
 				sp=" and ";
 				
-				Map<String, Object> paramMap = query.filterParams();
-				if( null != key ) {
-					paramMap = paramMap == null ? new HashMap<>() : paramMap;
+				Map<String, Object> paramMap = new HashMap<>();
+				if( null != key ) 
+				{
 					if( entityClass.idFields.size()>1 && EntitySpecification.isEmbeddableAccessor(key)) {
 						Map<Class<?>,Set<Field>> accessor = EntitySpecification.getAllAccessor(key.getClass());
 						Set<Field> keyField = accessor.get(Column.class);
@@ -90,18 +91,32 @@ public class JdbcSimpleQueryForEntity<T> extends JdbcAbstractQuery<T> implements
 						namedSql.append(sp).append("`").append(column).append("` = :"+fieldName);
 						paramMap.put(fieldName, key);
 					}
-				} else {
-					namedSql.append(sp).append("(").append(query.filter()).append(")");
+				} 
+				else if( !StringUtil.isEmpty( filter.getNamedFitler()) )
+				{
+					namedSql.append(sp).append("(").append(filter.getNamedFitler() ).append(")");
 				}
 				
-				if(!StringUtil.isEmpty(query.order()))
-					namedSql.append(" ORDER BY ").append(query.order());
+				if(!StringUtil.isEmpty(filter.getGroup()))
+				{
+					namedSql.append(" GROUP BY ").append(filter.getGroup());
+				}
+				
+				if(!StringUtil.isEmpty(filter.getHaving()))
+				{
+					namedSql.append(" HAVING ").append(filter.getHaving());
+				}
+				
+				if(!StringUtil.isEmpty(filter.getOrder()))
+				{
+					namedSql.append(" ORDER BY ").append(filter.getOrder());
+				}
 				
 				namedSql.append(" LIMIT 1");
 				
+				paramMap.putAll(filter.getNamedParams());
+				
 				return repository.getEntity(entityClass.clazz, namedSql.toString(), paramMap);
-			} else {
-				throw new JdbcGeneralRepositoryException("无法执行该查询请检查代码");
 			}
 		}
 		catch(Exception e) 

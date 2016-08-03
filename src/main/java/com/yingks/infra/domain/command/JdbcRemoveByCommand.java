@@ -1,7 +1,5 @@
 package com.yingks.infra.domain.command;
 
-import com.yingks.infra.domain.filter.AbstractFilter;
-import com.yingks.infra.domain.filter.AbstractDirectSQLQuery;
 import com.yingks.infra.domain.filter.FilterInterface;
 import com.yingks.infra.utils.StringUtil;
 
@@ -16,22 +14,21 @@ public class JdbcRemoveByCommand<T> extends JdbcAbstractCommand<T> implements Co
 	public void executeCommand() {
 		try 
 		{
-			FilterInterface queryConfig = getQueryConfig();
-			if(queryConfig instanceof AbstractDirectSQLQuery) {
-				AbstractDirectSQLQuery query = (AbstractDirectSQLQuery)queryConfig;
-				repository.commandUpdate(query.sql(), query.filterParams());
-			} else if(queryConfig instanceof AbstractFilter) {
-				AbstractFilter query = (AbstractFilter)queryConfig;
-				
+			FilterInterface filter = getFilter();
+			if( !StringUtil.isEmpty(filter.getDirectFilter()) ) 
+			{
+				repository.commandUpdate(filter.getDirectFilter(), filter.getNamedParams() );
+			}
+			else
+			{
 				StringBuilder namedSql = new StringBuilder(" DELETE FROM `").append(entityClass.tableName).append("`");
 				namedSql.append(" WHERE 1 ");
 				
-				if(!StringUtil.isEmpty(query.filter()))
-					namedSql.append("AND (").append(query.filter()).append(")");
-				
-				repository.commandUpdate(namedSql.toString(), query.filterParams());
-			} else {
-				throw new CommandException(CommandExceptionMsg.BASE_JDBC_DELETE);
+				if(!StringUtil.isEmpty(filter.getNamedFitler()))
+				{
+					namedSql.append("AND (").append(filter.getNamedFitler()).append(")");
+				}
+				repository.commandUpdate(namedSql.toString(), filter.getNamedParams());
 			}
 		} 
 		catch(Exception e) 
