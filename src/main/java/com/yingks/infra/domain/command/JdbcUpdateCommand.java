@@ -27,7 +27,7 @@ public class JdbcUpdateCommand<T> extends JdbcAbstractCommand<T> implements Comm
 			String column = null;
 			Method method = null;
 			Object val = null;
-			Set<String> fieldIter = entityClass.idFields;
+			Set<String> fieldIter = entityClass.fieldToColumnMap.keySet();
 			for(String fieldName:fieldIter)
 			{
 				if(entityClass.idFields.contains(fieldName)) {

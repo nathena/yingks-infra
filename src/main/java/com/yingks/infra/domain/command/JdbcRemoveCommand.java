@@ -25,7 +25,7 @@ public class JdbcRemoveCommand<T> extends JdbcAbstractCommand<T> implements Comm
 			Object val = null;
 			String column = null;
 			Method method = null;
-			Set<String> fieldIter = entityClass.idFields;
+			Set<String> fieldIter = entityClass.fieldToColumnMap.keySet();
 			for(String idFieldName : fieldIter)
 			{
 				column = entityClass.fieldToColumnMap.get(idFieldName);

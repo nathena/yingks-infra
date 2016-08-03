@@ -20,6 +20,8 @@ public class JdbcStoreCommand<T> extends JdbcAbstractCommand<T> implements Comma
 	
 	@Override
 	public void executeCommand() {
+		this.insert.setRepository(getRepository());
+		this.update.setRepository(getRepository());
 		try 
 		{
 			if(ifExist()) {
@@ -49,7 +51,7 @@ public class JdbcStoreCommand<T> extends JdbcAbstractCommand<T> implements Comma
 			String column = null;
 			Method method = null;
 			Object val = null;
-			Set<String> fieldIter = entityClass.idFields;
+			Set<String> fieldIter = entityClass.fieldToColumnMap.keySet();
 			for(String fieldName:fieldIter)
 			{
 				column = entityClass.fieldToColumnMap.get(fieldName);
