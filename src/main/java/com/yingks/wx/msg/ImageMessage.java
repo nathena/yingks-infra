@@ -1,6 +1,6 @@
 package com.yingks.wx.msg;
 
-public class PicMessage extends BaseMessage{
+public class ImageMessage extends AbstractGeneralMessage{
 	
 	/**
 	 * @Fields serialVersionUID 

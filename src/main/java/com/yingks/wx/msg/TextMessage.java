@@ -1,6 +1,6 @@
 package com.yingks.wx.msg;
 
-public class TextMessage extends BaseMessage{
+public class TextMessage extends AbstractGeneralMessage{
 	
 	/**
 	 * @Fields serialVersionUID 
