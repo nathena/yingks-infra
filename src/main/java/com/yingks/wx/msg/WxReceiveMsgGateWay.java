@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -33,6 +36,16 @@ public class WxReceiveMsgGateWay
 	public WxReceiveMsgGateWay(ProcessMsgHandler msgHandler)
 	{
 		this.msgHandler = msgHandler;
+	}
+	
+	public void valid(HttpServletRequest request, HttpServletResponse response)
+	{
+		
+	}
+	
+	public boolean checkSignature(HttpServletRequest request)
+	{
+		return true;
 	}
 	
 	public void parserData(InputStream in) throws DocumentException, IOException

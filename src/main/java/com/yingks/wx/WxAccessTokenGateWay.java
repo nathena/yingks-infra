@@ -16,15 +16,10 @@ public class WxAccessTokenGateWay {
 	private String appSercet;
 	private WxAccessToken token;
 	
-	public WxAccessTokenGateWay(String appid,String appSercet)
+	public WxAccessTokenGateWay(WxConfig config)
 	{
-		if( StringUtil.isEmpty(appid) || StringUtil.isEmpty(appSercet) )
-		{
-			throw new WxException(WxExceptionMsg.not_null);
-		}
-		
-		this.appid = appid;
-		this.appSercet = appSercet;
+		this.appid = config.getAppId();
+		this.appSercet = config.getAppSecret();
 	}
 	
 	public WxAccessToken geWxAccessToken()

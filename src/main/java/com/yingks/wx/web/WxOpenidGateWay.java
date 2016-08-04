@@ -16,6 +16,8 @@ import com.yingks.infra.utils.HttpUtil;
 import com.yingks.infra.utils.LogHelper;
 import com.yingks.infra.utils.NumberUtil;
 import com.yingks.infra.utils.StringUtil;
+import com.yingks.wx.WxConfig;
+import com.yingks.wx.WxConfig.InfoLangType;
 import com.yingks.wx.exception.WxException;
 import com.yingks.wx.exception.WxExceptionMsg;
 import com.yingks.wx.user.WxUserLbs;
@@ -31,8 +33,6 @@ import com.yingks.wx.user.WxUserLbs;
  */
 public class WxOpenidGateWay {
 
-	private static final String site_access_code_state = "fangmmapi";
-	
 	private static final String site_access_code_api = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s#wechat_redirect";
 	private static final String openid_access_token_api = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code";
 	
@@ -42,35 +42,26 @@ public class WxOpenidGateWay {
 	
 	private String appid;
 	private String appSercet;
-	private String wxCallBackHost;
 	
-	public WxOpenidGateWay(String appid,String appSercet,String wxCallBackHost)
+	private WxConfig config;
+	
+	public WxOpenidGateWay(WxConfig config)
 	{
-		if( StringUtil.isEmpty(appid) || StringUtil.isEmpty(appSercet) )
-		{
-			throw new WxException(WxExceptionMsg.not_null);
-		}
+		this.appid = config.getAppId();
+		this.appSercet = config.getAppSecret();
 		
-		this.appid = appid;
-		this.appSercet = appSercet;
-		this.wxCallBackHost = wxCallBackHost;
+		this.config = config;
 	}
 	
-	public void reqOpenidCode(HttpServletRequest request,HttpServletResponse response,String url,WxOpenidScopeType scope) throws IOException
+	public void reqOpenidCode(HttpServletRequest request,HttpServletResponse response) throws IOException
 	{
-		if( null == scope)
-		{
-			throw new WxException(WxExceptionMsg.not_null);
-		}
-		
-		url = URLEncoder.encode(wxCallBackHost+url, "UTF-8");
-		
-		String api = String.format(site_access_code_api, appid,url,scope.name(),site_access_code_state);
+		String url = URLEncoder.encode( config.getRedirect_uri(), "UTF-8");
+		String api = String.format(site_access_code_api, appid,url, config.getScope().name() , config.getAccess_code_state());
 		
 		response.sendRedirect(api);
 	}
 	
-	public WxOpenid getOpenidByCode(String code,WxOpenidInfoLangType lang)
+	public WxOpenid getOpenidByCode(String code)
 	{
 		String api = String.format(openid_access_token_api,appid,appSercet,code);
 		String result = HttpUtil.doGet(api, null);
@@ -96,12 +87,12 @@ public class WxOpenidGateWay {
 		wxOpenid.setRefreshToken(data.getString("refresh_token"));
 		wxOpenid.setOpenid(data.getString("openid"));
 		
-		userInfo(wxOpenid,lang);
+		userInfo(wxOpenid,config.getLang());
 		
 		return wxOpenid;
 	}
 	
-	public void userInfo(WxOpenid wxOpenid,WxOpenidInfoLangType lang)
+	public void userInfo(WxOpenid wxOpenid, InfoLangType lang)
 	{
 		String api = String.format(userinfo_api, wxOpenid.getAccessToken(),wxOpenid.getOpenid(),lang.name());
 		

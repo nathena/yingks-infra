@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yingks.infra.utils.HttpUtil;
 import com.yingks.infra.utils.StringUtil;
 import com.yingks.wx.WxAccessTokenGateWay;
+import com.yingks.wx.WxConfig;
 import com.yingks.wx.exception.WxException;
 import com.yingks.wx.exception.WxExceptionMsg;
 
@@ -16,9 +17,9 @@ public class WxMpQrSceneGateWay {
 	
 	private WxAccessTokenGateWay wxAccessTokenService;
 	
-	public WxMpQrSceneGateWay(String appid,String appSercet)
+	public WxMpQrSceneGateWay(WxConfig config)
 	{
-		wxAccessTokenService = new WxAccessTokenGateWay(appid, appSercet);
+		wxAccessTokenService = new WxAccessTokenGateWay(config);
 	}
 	
 	public WxMpQrResult create(WxMpQr qr)

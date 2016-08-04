@@ -5,6 +5,7 @@ import com.yingks.infra.utils.HttpUtil;
 import com.yingks.infra.utils.LogHelper;
 import com.yingks.infra.utils.StringUtil;
 import com.yingks.wx.WxAccessTokenGateWay;
+import com.yingks.wx.WxConfig;
 import com.yingks.wx.exception.WxException;
 import com.yingks.wx.exception.WxExceptionMsg;
 
@@ -15,9 +16,9 @@ public class WxSendMsgGateWay
 	
 	private WxAccessTokenGateWay wxAccessTokenService;
 	
-	public WxSendMsgGateWay(String appid,String appSercet)
+	public WxSendMsgGateWay(WxConfig config)
 	{
-		wxAccessTokenService = new WxAccessTokenGateWay(appid, appSercet);
+		this.wxAccessTokenService = new WxAccessTokenGateWay(config);
 	}
 	
 	public void send(WxTemplate template)
