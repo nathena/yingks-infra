@@ -2,6 +2,8 @@ package com.yingks.wx.msg;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,8 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.alibaba.fastjson.JSONObject;
+import com.yingks.infra.crypto.SHA1Coder;
+import com.yingks.wx.WxConfig;
 
 /**
  * 目前仅支持明文处理
@@ -31,21 +35,46 @@ public class WxReceiveMsgGateWay
 {
 	private static Logger logger = Logger.getLogger(WxReceiveMsgGateWay.class);
 	
+	private WxConfig config;
 	private ProcessMsgHandler msgHandler;
 	
-	public WxReceiveMsgGateWay(ProcessMsgHandler msgHandler)
+	public WxReceiveMsgGateWay(WxConfig config, ProcessMsgHandler msgHandler)
 	{
+		this.config = config;
 		this.msgHandler = msgHandler;
 	}
 	
-	public void valid(HttpServletRequest request, HttpServletResponse response)
+	public void valid(HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
+		String signature = request.getParameter("signature");
+		String timestamp = request.getParameter("timestamp");
+		String nonce     = request.getParameter("nonce");
+		String echostr   = request.getParameter("echostr");
 		
-	}
-	
-	public boolean checkSignature(HttpServletRequest request)
-	{
-		return true;
+		String token     = config.getToken();
+		
+		List<String> data = new ArrayList<>();
+		data.add(token);
+		data.add(timestamp);
+		data.add(nonce);
+		
+		Collections.sort(data);
+		
+		StringBuffer tmpStr = new StringBuffer();
+		for(String val : data)
+		{
+			tmpStr.append(val);
+		}
+		
+		String sha1TmpStr = SHA1Coder.encode(tmpStr.toString());
+		if( signature.equals(sha1TmpStr) )
+		{
+			response.getWriter().write(echostr);
+		}
+		else if( config.isDebug() )
+		{
+			response.getWriter().write(echostr);//也正常
+		}
 	}
 	
 	public void parserData(InputStream in) throws DocumentException, IOException

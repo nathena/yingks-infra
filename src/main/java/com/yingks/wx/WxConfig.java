@@ -2,6 +2,8 @@ package com.yingks.wx;
 
 public class WxConfig {
 
+	private boolean debug;
+	
 	private String token;
 	
 	private String appId;
@@ -24,15 +26,47 @@ public class WxConfig {
 		this.setLang(lang);
 	}
 	
+	public boolean isDebug() {
+		return debug;
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
 	public enum OpenidScopeType
 	{
 		snsapi_base,
-		snsapi_userinfo
+		snsapi_userinfo;
+		
+		public static OpenidScopeType getByName(String name)
+		{
+			for(OpenidScopeType type: OpenidScopeType.values())
+			{
+				if( type.name().equals(name))
+				{
+					return type;
+				}
+			}
+			return snsapi_userinfo;
+		}
 	}
 	
 	public enum InfoLangType
 	{
-		zh_CN,zh_TW,en
+		zh_CN,zh_TW,en;
+		
+		public static InfoLangType getByName(String name)
+		{
+			for(InfoLangType type: InfoLangType.values())
+			{
+				if( type.name().equals(name))
+				{
+					return type;
+				}
+			}
+			return zh_CN;
+		}
 	}
 
 	public String getToken() {
