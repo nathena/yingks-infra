@@ -27,7 +27,8 @@ public class JdbcSimpleQueryForPagination<T> extends JdbcAbstractQuery<T> implem
 		
 		pagination.setTotal(jdbcSimpleQueryForLong.queryForLong());
 		pagination.setRows(jdbcSimpleQueryForList.queryForList());
-		
+		pagination.setPage((int) getFilter().getPage());
+		pagination.setPageSize((int) getFilter().getOffset());
 		return pagination;
 	}
 }

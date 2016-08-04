@@ -7,6 +7,8 @@ public interface FilterInterface {
 	
 	//支持直接查询
 	public String getDirectFilter();
+	//查询分页页数
+	public long getPage();
 	//查询分页起点
 	public long getLimit();
 	//查询分页长
