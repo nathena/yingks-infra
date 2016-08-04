@@ -236,7 +236,7 @@ public class WxPayappOperation extends AbstractPayOperation {
 		catch(NestedRuntimeException e) 
 		{
 			//因为service需要抛出异常才能回滚 这里接收service的业务异常返回成功,记录失败原因
-			logger.error("alipay回调出现业务异常:" + e.getMsg(), e);
+			logger.error("alipay回调出现业务异常:" + e.getMessage(), e);
 			
 			toResponse("success");
 		} 
