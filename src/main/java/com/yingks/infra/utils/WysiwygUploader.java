@@ -5,7 +5,6 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,6 +12,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.yingks.infra.context.AppsContext;
+import com.yingks.infra.crypto.Base64Coder;
 
 public class WysiwygUploader {
 
@@ -62,7 +62,7 @@ public class WysiwygUploader {
 				}
 			}
 			
-			ImageIO.write(ImageIO.read(new ByteArrayInputStream(Base64.decodeBase64(data))), mimeVal, imageFile);
+			ImageIO.write(ImageIO.read(new ByteArrayInputStream(Base64Coder.decode(data))), mimeVal, imageFile);
 			
 			image.attr("src", remoteHost+path);
 		}
