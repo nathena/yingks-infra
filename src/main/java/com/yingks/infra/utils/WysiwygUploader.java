@@ -35,16 +35,27 @@ public class WysiwygUploader {
 	{
 		try
 		{
-			if( null == image )return;
+			if( null == image )
+			{
+				return;
+			}
 			
 			String src = image.attr("src");
 			
-			if( StringUtil.isEmpty(src) ) return;
+			if( StringUtil.isEmpty(src) )
+			{
+				return;
+			}
 			
 			int index = src.indexOf(";base64,");
 			if( index<0 )
 			{
 				index = src.indexOf(";BASE64,");
+			}
+			
+			if( index <0 )
+			{
+				return;
 			}
 			
 			String data = src.substring(index+8, src.length());
