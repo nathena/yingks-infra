@@ -1,4 +1,4 @@
-package com.yingks.infra.domain;
+package com.yingks.infra.domain.query;
 
 import java.io.Serializable;
 import java.util.List;

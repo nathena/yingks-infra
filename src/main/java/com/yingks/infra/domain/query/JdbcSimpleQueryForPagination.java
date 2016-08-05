@@ -1,6 +1,5 @@
 package com.yingks.infra.domain.query;
 
-import com.yingks.infra.domain.Pagination;
 import com.yingks.infra.domain.filter.FilterInterface;
 
 public class JdbcSimpleQueryForPagination<T> extends JdbcAbstractQuery<T> implements QueryForPaginationInterface<T> {
