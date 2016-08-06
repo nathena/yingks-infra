@@ -67,7 +67,7 @@ public class JdbcSimpleQueryForList<T> extends JdbcAbstractQuery<T> implements Q
 					namedSql.append(" ORDER BY ").append(filter.getOrder());
 				}
 				
-				if( filter.getLimit()>0 && filter.getOffset()>0 )
+				if( filter.getLimit()>=0 && filter.getOffset()>0 )
 				{
 					namedSql.append("LIMIT :__offset, :__rowSize");
 					
