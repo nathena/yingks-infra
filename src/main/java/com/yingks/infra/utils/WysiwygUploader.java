@@ -27,8 +27,7 @@ public class WysiwygUploader {
 		{
 			processImageElement(img,remoteHost);
 		}
-		
-		return doc.data();
+		return doc.body().html();
 	}
 	
 	private static void processImageElement(Element image,String remoteHost)
@@ -52,7 +51,6 @@ public class WysiwygUploader {
 			{
 				index = src.indexOf(";BASE64,");
 			}
-			
 			if( index <0 )
 			{
 				return;
@@ -61,7 +59,7 @@ public class WysiwygUploader {
 			String data = src.substring(index+8, src.length());
 			String mimeVal = src.substring(5,index);//data:
 				   mimeVal = mimeVal.split("\\/")[1]; //imaga/png=>png
-			
+				   
 			String path = "/"+SimpleUUIDGenerator.generateUUID()+"."+mimeVal;
 			File imageFile = new File(AppsContext.uploadDir()+path);
 			if (!imageFile.exists()) 
