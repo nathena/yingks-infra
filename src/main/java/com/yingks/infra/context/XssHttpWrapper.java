@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 public class XssHttpWrapper extends HttpServletRequestWrapper 
 {
 	private HttpServletRequest orgRequest;
+	private boolean ignore = false;
 
     public XssHttpWrapper(HttpServletRequest request) {
         super(request);
@@ -22,7 +23,7 @@ public class XssHttpWrapper extends HttpServletRequestWrapper
     @Override
     public String getParameter(String name) {
         String value = super.getParameter(xssEncode(name));
-        if (value != null) {
+        if (value != null && !ignore) {
             value = xssEncode(value);
         }
         return value;
@@ -32,8 +33,8 @@ public class XssHttpWrapper extends HttpServletRequestWrapper
     public String[] getParameterValues(String parameter) 
     {
         String[] values = super.getParameterValues(parameter);
-        if (values == null) {
-            return null;
+        if (values == null || ignore) {
+            return values;
         }
         int count = values.length;
         String[] encodedValues = new String[count];
@@ -101,7 +102,7 @@ public class XssHttpWrapper extends HttpServletRequestWrapper
             // Avoid onload= e­xpressions
             scriptPattern = Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
             value = scriptPattern.matcher(value).replaceAll("");
-            
+            //TODO 下面这个会使请求中有&"<>都会被替换成转义符,如果原本的请求就是需要这些字符的话会有问题
             value = value.replaceAll("&", "&amp;");
             value = value.replaceAll("\"", "&quot;");
             value = value.replaceAll("<", "&lt;");
@@ -130,4 +131,12 @@ public class XssHttpWrapper extends HttpServletRequestWrapper
         }
         return req;
     }
+
+	public boolean isIgnore() {
+		return ignore;
+	}
+
+	public void setIgnore(boolean ignore) {
+		this.ignore = ignore;
+	}
 }
