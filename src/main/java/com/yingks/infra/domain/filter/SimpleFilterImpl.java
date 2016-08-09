@@ -49,9 +49,19 @@ public class SimpleFilterImpl extends AbstractFilter {
 			this.namedParams.putAll(namedParams);
 		}
 		
-		if(!CollectionUtil.isEmpty(namedParams))
+		if( !StringUtil.isEmpty(order) )
 		{
 			this.order.append(order);
+		}
+		
+		if( !StringUtil.isEmpty(group) )
+		{
+			this.group.append(group);
+		}
+		
+		if( !StringUtil.isEmpty(having) )
+		{
+			this.having.append(having);
 		}
 	}
 	

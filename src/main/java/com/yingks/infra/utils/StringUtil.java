@@ -33,8 +33,8 @@ public final class StringUtil
 				return true;
 			} else if (str.toString().trim().length() == 0) {
 				return true;
-			} else if (str.toString().trim().equals("null")) {
-				return true;
+//			} else if (str.toString().trim().equals("null")) {
+//				return true;
 			}
 		}
 
