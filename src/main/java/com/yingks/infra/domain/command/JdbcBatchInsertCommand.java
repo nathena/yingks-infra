@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.yingks.infra.exception.NestedRuntimeException;
+
 /**
  * 该方法为测试
  * @Title: JdbcBatchInsertCommand.java
@@ -28,6 +30,8 @@ public class JdbcBatchInsertCommand<T> extends JdbcAbstractCommand<T> implements
 		if( entitys.size() == 0 ){
 			throw new CommandException(CommandExceptionMsg.COMMAND_ARG_MUST_ENTITY);
 		}
+		
+		this.entitys = entitys;
 	}
 	
 	@Override
@@ -79,7 +83,7 @@ public class JdbcBatchInsertCommand<T> extends JdbcAbstractCommand<T> implements
 			repository.batchUpdate(sb.toString(), maps);
 		}
 		catch(Exception e) {
-			throw new CommandException(CommandExceptionMsg.BASE_JDBC_CREATE,e);
+			throw new NestedRuntimeException(this.getClass().getName(), e);
 		}
 	}
 	
