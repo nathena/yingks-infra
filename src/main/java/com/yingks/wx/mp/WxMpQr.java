@@ -18,7 +18,7 @@ public class WxMpQr implements Serializable {
 	
 	protected enum Action
 	{
-		QR_SCENE,QR_LIMIT_SCENE
+		QR_SCENE,QR_LIMIT_SCENE,QR_LIMIT_STR_SCENE
 	}
 	
 	public String getExpire_seconds() {
@@ -52,11 +52,11 @@ public class WxMpQr implements Serializable {
 	public String toString()
 	{
 		JSONObject json = new JSONObject();
-		json.put("action_name", Action.QR_LIMIT_SCENE.name());
+		json.put("action_name", Action.QR_LIMIT_STR_SCENE.name());
 		
 		JSONObject scene = new JSONObject();
 		scene.put("scene_str", getScene_str());
-		scene.put("scene_id", getScene_id());
+//		scene.put("scene_id", getScene_id());
 		
 		JSONObject data = new JSONObject();
 		data.put("scene", scene);
@@ -73,7 +73,7 @@ public class WxMpQr implements Serializable {
 		json.put("expire_seconds", getExpire_seconds());
 		
 		JSONObject scene = new JSONObject();
-		scene.put("scene_str", getScene_str());
+//		scene.put("scene_str", getScene_str());
 		scene.put("scene_id", getScene_id());
 		
 		JSONObject data = new JSONObject();

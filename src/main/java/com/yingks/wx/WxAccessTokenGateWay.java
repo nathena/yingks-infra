@@ -24,7 +24,7 @@ public class WxAccessTokenGateWay {
 	
 	public WxAccessToken geWxAccessToken()
 	{
-		if( null != token && DateTimeUtil.getTimeStamp() - token.getCreateIn() <= token.getExpiresIn() )
+		if( null != token && DateTimeUtil.getTimeStamp() - token.getCreateIn() < token.getExpiresIn() )
 		{
 			return token;
 		}

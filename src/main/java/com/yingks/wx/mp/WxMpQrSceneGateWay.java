@@ -2,6 +2,8 @@ package com.yingks.wx.mp;
 
 import java.nio.charset.Charset;
 
+import org.apache.log4j.Logger;
+
 import com.alibaba.fastjson.JSONObject;
 import com.yingks.infra.utils.HttpUtil;
 import com.yingks.infra.utils.StringUtil;
@@ -12,6 +14,8 @@ import com.yingks.wx.exception.WxExceptionMsg;
 
 public class WxMpQrSceneGateWay {
 
+	private static Logger logger = Logger.getLogger(WxMpQrSceneGateWay.class);
+	
 	private static String qr_scene = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=%s";
 	private static String qr_ticket = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=%s";
 	
@@ -26,6 +30,8 @@ public class WxMpQrSceneGateWay {
 	{
 		String api = String.format(qr_scene, wxAccessTokenService.geWxAccessToken().getToken());
 		String data = qr.toString();
+		
+		logger.debug(" ============= WxMpQr : "+data);
 		
 		byte[] result = HttpUtil.doRestPost(api, data);
 		
@@ -44,6 +50,9 @@ public class WxMpQrSceneGateWay {
 	{
 		String api = String.format(qr_scene, wxAccessTokenService.geWxAccessToken().getToken());
 		String data = qr.toTemporaryString();
+		
+		logger.debug(" ============= WxMpQr : "+data);
+		
 		byte[] result = HttpUtil.doRestPost(api, data);
 		
 		String resultData = new String(result,Charset.forName("UTF-8"));
