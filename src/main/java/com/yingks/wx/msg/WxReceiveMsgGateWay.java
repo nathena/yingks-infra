@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
@@ -77,26 +76,36 @@ public class WxReceiveMsgGateWay
 		}
 	}
 	
-	public void parserData(InputStream in) throws DocumentException, IOException
+	public void parserData(InputStream in) throws IOException
 	{
 		Map<String, String> msgData = new HashMap<>();
-		
-		// 读取输入流
-		SAXReader reader = new SAXReader();
-		Document document = reader.read(in);
-		// 得到xml根元素
-		Element root = document.getRootElement();
-		// 得到根元素的所有子节点
-		@SuppressWarnings("unchecked")
-		List<Element> elementList = root.elements();
-		// 遍历所有子节点
-		for (Element e : elementList)
+		try
 		{
-			msgData.put(e.getName(), e.getText());
+			// 读取输入流
+			SAXReader reader = new SAXReader();
+			Document document = reader.read(in);
+			// 得到xml根元素
+			Element root = document.getRootElement();
+			// 得到根元素的所有子节点
+			@SuppressWarnings("unchecked")
+			List<Element> elementList = root.elements();
+			// 遍历所有子节点
+			for (Element e : elementList)
+			{
+				msgData.put(e.getName(), e.getText());
+			}
 		}
-
-		// 释放资源
-		in.close();
+		catch(Exception e)
+		{
+			logger.error(e.getMessage(), e);
+		}
+		finally
+		{
+			// 释放资源
+			in.close();
+		}
+		
+		processData(msgData);
 	}
 	
 	protected void processData(Map<String, String> msgData)
