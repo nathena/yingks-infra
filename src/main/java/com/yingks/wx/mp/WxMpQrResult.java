@@ -12,11 +12,23 @@ public class WxMpQrResult implements Serializable {
 	private String ticket;
 	private String expire_seconds;
 	private String url;
+	private String qrCodeUrl;
+	
+	public void setQrCodeUrl(String qrCodeUrl) {
+		this.qrCodeUrl = qrCodeUrl;
+	}
+
+	public String getQrCodeUrl()
+	{
+		return this.qrCodeUrl;
+	}
+	
 	public String getTicket() {
 		return ticket;
 	}
 	public void setTicket(String ticket) {
 		this.ticket = ticket;
+		this.qrCodeUrl = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket="+ticket;
 	}
 	public String getExpire_seconds() {
 		return expire_seconds;

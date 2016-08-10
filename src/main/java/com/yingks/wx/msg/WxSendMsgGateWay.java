@@ -11,6 +11,7 @@ import com.yingks.wx.exception.WxExceptionMsg;
 
 public class WxSendMsgGateWay
 {
+	private static String custom_send_api = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=%s";
 	private static String send_api = "https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=%s";
 	private static String send_template_api = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s";
 	
@@ -32,7 +33,27 @@ public class WxSendMsgGateWay
 		LogHelper.debug("发送微信文本消息完成 => "+res+" = "+data);
 	}
 	
-	public WxSendMsgResult sendText(String[] openids,String content)
+	public WxSendMsgResult sendText(String openid,String content)
+	{
+		JSONObject json = new JSONObject();
+		json.put("touser", openid);
+		json.put("msgtype", WxSendMsgType.text.name());
+		
+		JSONObject con = new JSONObject();
+		con.put("content", content);
+		
+		json.put("text", con);
+		
+		String api = String.format(custom_send_api, wxAccessTokenService.geWxAccessToken().getToken());
+		
+		byte[] result = HttpUtil.doRestPost(api, json.toJSONString());
+		String res = new String(result);
+		LogHelper.debug("发送微信文本消息完成 => "+res);
+		
+		return parseResponse(res);
+	}
+	
+	public WxSendMsgResult groupSendText(String[] openids,String content)
 	{
 		if( null == openids || openids.length == 0 )
 		{

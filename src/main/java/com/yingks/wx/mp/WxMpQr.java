@@ -59,7 +59,7 @@ public class WxMpQr implements Serializable {
 		scene.put("scene_id", getScene_id());
 		
 		JSONObject data = new JSONObject();
-		scene.put("scene", scene);
+		data.put("scene", scene);
 		
 		json.put("action_info", data);
 		
@@ -77,7 +77,7 @@ public class WxMpQr implements Serializable {
 		scene.put("scene_id", getScene_id());
 		
 		JSONObject data = new JSONObject();
-		scene.put("scene", scene);
+		data.put("scene", scene);
 		
 		json.put("action_info", data);
 		
