@@ -11,30 +11,40 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.yingks.infra.context.AppsContext;
 import com.yingks.infra.crypto.Base64Coder;
 
 public class WysiwygUploader {
 
 	private static Logger logger = Logger.getLogger(WysiwygUploader.class);
 	
-	public static String weaveData(String data,String remoteHost)
+	/**
+	 * 
+	 * @Title: weaveData
+	 * @author nathena
+	 * @param @param data
+	 * @param @param storePath 图片存取路径
+	 * @param @param remoteHost 图片访问路径
+	 * @param @return
+	 * @return String 
+	 * @throws
+	 */
+	public static String weaveData(String data,String storePath,String remoteHost)
 	{
 		Document doc = Jsoup.parse(data);
 		
 		Elements imgs = doc.getElementsByTag("img");
 		for(Element img : imgs)
 		{
-			processImageElement(img,remoteHost);
+			processImageElement(img,storePath,remoteHost);
 		}
 		return doc.body().html();
 	}
 	
-	private static void processImageElement(Element image,String remoteHost)
+	private static void processImageElement(Element image,String storePath,String remoteHost)
 	{
 		try
 		{
-			if( null == image )
+			if( null == image || StringUtil.isEmpty(storePath) || StringUtil.isEmpty(remoteHost))
 			{
 				return;
 			}
@@ -61,7 +71,7 @@ public class WysiwygUploader {
 				   mimeVal = mimeVal.split("\\/")[1]; //imaga/png=>png
 				   
 			String path = "/"+SimpleUUIDGenerator.generateUUID()+"."+mimeVal;
-			File imageFile = new File(AppsContext.uploadDir()+path);
+			File imageFile = new File(storePath+path);
 			if (!imageFile.exists()) 
 			{
 				if( !imageFile.mkdirs() )
