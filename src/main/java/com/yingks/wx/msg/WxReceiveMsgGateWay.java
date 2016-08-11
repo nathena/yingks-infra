@@ -43,7 +43,19 @@ public class WxReceiveMsgGateWay
 		this.msgHandler = msgHandler;
 	}
 	
-	public void valid(HttpServletRequest request, HttpServletResponse response) throws IOException
+	public void doReceive(HttpServletRequest request, HttpServletResponse response) throws IOException
+	{
+		if( "GET".equalsIgnoreCase(request.getMethod()) )
+		{
+			valid(request,response);
+		}
+		else
+		{
+			parserData(request.getInputStream());
+		}
+	}
+	
+	protected void valid(HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
 		String signature = request.getParameter("signature");
 		String timestamp = request.getParameter("timestamp");
@@ -76,7 +88,7 @@ public class WxReceiveMsgGateWay
 		}
 	}
 	
-	public void parserData(InputStream in) throws IOException
+	protected void parserData(InputStream in) throws IOException
 	{
 		Map<String, String> msgData = new HashMap<>();
 		try
