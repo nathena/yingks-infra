@@ -615,6 +615,11 @@ public final class DateTimeUtil
 		return calendar.getTime();
 	}
 	
+	public static Timestamp geTimestamp()
+	{
+		return new Timestamp(getDate().getTime());
+	}
+	
 	/**
 	 * 获取当前日期，并按格式化输出
 	 *
