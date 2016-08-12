@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.yingks.infra.domain.store.AbstractEntityAware;
+
 /**
  * 约定不支持占位符查询，使用命名参数查询
  * @Title: AbstractFilter.java
@@ -59,7 +61,7 @@ public abstract class AbstractFilter implements FilterInterface {
 		fields.clear();
 	}
 	
-	public String getDirectFilter() {
+	public String getDirectFilter(AbstractEntityAware<?> aware) {
 		return directFilter;
 	}
 

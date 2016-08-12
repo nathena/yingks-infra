@@ -16,9 +16,9 @@ public class JdbcSimpleQueryForLong<T> extends JdbcAbstractQuery<T> implements Q
 		try
 		{
 			FilterInterface filter = getFilter();
-			if(!StringUtil.isEmpty(filter.getDirectFilter()) )
+			if(!StringUtil.isEmpty(filter.getDirectFilter(this)) )
 			{
-				return repository.queryForLong(filter.getDirectFilter(), filter.getNamedParams());
+				return repository.queryForLong(filter.getDirectFilter(this), filter.getNamedParams());
 			}
 			else
 			{

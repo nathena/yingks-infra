@@ -20,9 +20,9 @@ public class JdbcUpdateByCommand<T> extends JdbcAbstractCommand<T> implements Co
 		try 
 		{
 			FilterInterface filter = getFilter();
-			if( !StringUtil.isEmpty(filter.getDirectFilter()) ) 
+			if( !StringUtil.isEmpty(filter.getDirectFilter(this)) ) 
 			{
-				repository.commandUpdate(filter.getDirectFilter(), filter.getNamedParams() );
+				repository.commandUpdate(filter.getDirectFilter(this), filter.getNamedParams() );
 			}
 			else
 			{

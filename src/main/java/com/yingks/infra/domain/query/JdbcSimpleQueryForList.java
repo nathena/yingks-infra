@@ -21,9 +21,9 @@ public class JdbcSimpleQueryForList<T> extends JdbcAbstractQuery<T> implements Q
 		try
 		{
 			FilterInterface filter = getFilter();
-			if(!StringUtil.isEmpty(filter.getDirectFilter()) )
+			if(!StringUtil.isEmpty(filter.getDirectFilter(this)) )
 			{
-				return repository.getList(entityClass.clazz, filter.getDirectFilter(), filter.getNamedParams());
+				return repository.getList(entityClass.clazz, filter.getDirectFilter(this), filter.getNamedParams());
 			}
 			else
 			{

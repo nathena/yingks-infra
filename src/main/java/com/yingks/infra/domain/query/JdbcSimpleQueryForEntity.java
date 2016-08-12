@@ -35,9 +35,9 @@ public class JdbcSimpleQueryForEntity<T> extends JdbcAbstractQuery<T> implements
 		try
 		{	
 			FilterInterface filter = getFilter();
-			if( !StringUtil.isEmpty(filter.getDirectFilter()) ) 
+			if( !StringUtil.isEmpty(filter.getDirectFilter(this)) ) 
 			{
-				return repository.getEntity(entityClass.clazz, filter.getDirectFilter(), filter.getNamedParams() );
+				return repository.getEntity(entityClass.clazz, filter.getDirectFilter(this), filter.getNamedParams() );
 			}
 			else
 			{

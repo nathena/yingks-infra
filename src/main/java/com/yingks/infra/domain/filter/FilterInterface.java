@@ -3,10 +3,12 @@ package com.yingks.infra.domain.filter;
 import java.util.List;
 import java.util.Map;
 
+import com.yingks.infra.domain.store.AbstractEntityAware;
+
 public interface FilterInterface {
 	
 	//支持直接查询
-	public String getDirectFilter();
+	public String getDirectFilter(AbstractEntityAware<?> aware);
 	//查询分页页数
 	public long getPage();
 	//查询分页起点
