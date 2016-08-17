@@ -11,6 +11,14 @@ public class SimpleFilterImpl extends AbstractFilter {
 	{
 		
 	}
+	public SimpleFilterImpl(String namedFitler)
+	{
+		String lowerCaseSql = namedFitler.toLowerCase();
+		if(lowerCaseSql.startsWith("select") || lowerCaseSql.startsWith("select") || lowerCaseSql.startsWith("delete"))
+			setDirectFilter(namedFitler);
+		else
+			_init(namedFitler,null,null,null,null);
+	}
 	
 	public SimpleFilterImpl(String namedFitler, Map<String,Object> namedParams)
 	{
@@ -30,6 +38,33 @@ public class SimpleFilterImpl extends AbstractFilter {
 	public SimpleFilterImpl(String namedFitler, Map<String,Object> namedParams,String order, String group, String having)
 	{
 		_init(namedFitler,namedParams,order,group,having);
+	}
+	
+	public SimpleFilterImpl(String sql, Object...nameParams)
+	{
+		String compileSql = sql;
+		//TODO 替换占位符,但是这步好像有点多余,因为jdbc的查询本身也可以用?占位符(好像集合类型的不可以)
+		int i = 0;
+		while(compileSql.indexOf("?") >= 0) {
+			if(nameParams.length <= i)
+				throw new RuntimeException("占位符和参数数量不一致");
+			
+			compileSql = compileSql.replaceFirst("\\?", ":namedParam_" + i);
+			namedParams.put("namedParam_" + i, nameParams[i]);
+			i++;
+		}
+		
+		String lowerCaseSql = compileSql.toLowerCase();
+		if(lowerCaseSql.startsWith("select") || lowerCaseSql.startsWith("select") || lowerCaseSql.startsWith("delete"))
+			setDirectFilter(compileSql);
+		else
+			namedFitler.append(compileSql);
+		
+	}
+	
+	public void addOperateFields(String... fields) {
+		for(String field : fields)
+			this.fields.add(field);
 	}
 	
 	@Override
