@@ -1,4 +1,4 @@
-package com.yingks.pay.exception;
+package com.yingks.wx.exception;
 
 public class PayException extends RuntimeException {
 

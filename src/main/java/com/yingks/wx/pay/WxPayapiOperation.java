@@ -1,4 +1,4 @@
-package com.yingks.pay.wx;
+package com.yingks.wx.pay;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -28,7 +28,8 @@ import com.yingks.pay.PayNotifyAbleInterface;
 import com.yingks.pay.PayStatusEnum;
 import com.yingks.pay.TradeNotify;
 import com.yingks.pay.TradeNotify.Type;
-import com.yingks.pay.exception.PayException;
+import com.yingks.wx.WxConfig;
+import com.yingks.wx.exception.PayException;
 
 public class WxPayapiOperation extends AbstractPayOperation {
 
@@ -36,18 +37,12 @@ public class WxPayapiOperation extends AbstractPayOperation {
 	
 	private static String wxOrderUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 	
-	private static String appId = WxConfig.appId;
-	private static String appSecret = WxConfig.appSecret;
-	private static String mchId = WxConfig.mchId;
-	private static String mchKey = WxConfig.mchKey;
+	private WxConfig wxConfig;
 	
-	private static String jsWxPayApiUrl = WxConfig.jsWxPayApiUrl;
-	private static String notifyUrl = WxConfig.notifyUrl;
-	private static String success_url = WxConfig.success_url;
-	private static String failed_url = WxConfig.failed_url;
-	
-	public WxPayapiOperation(PayNotifyAbleInterface paymentOperation) {
+	public WxPayapiOperation(WxConfig wxConfig, PayNotifyAbleInterface paymentOperation) {
 		super(paymentOperation);
+		
+		this.wxConfig = wxConfig;
 	}
 
 	public void toPay(String out_trade_no,String subject,String total_fee, HttpServletRequest request,HttpServletResponse response) throws Exception
@@ -60,8 +55,8 @@ public class WxPayapiOperation extends AbstractPayOperation {
 		session.setAttribute("total_fee", total_fee);
 		session.setAttribute("out_trade_no", out_trade_no);
 		
-		String snsapi = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId
-						+"&redirect_uri="+URLEncoder.encode(jsWxPayApiUrl, "UTF-8")
+		String snsapi = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+wxConfig.getAppId()
+						+"&redirect_uri="+URLEncoder.encode(wxConfig.getJsWxPayApiUrl(), "UTF-8")
 						+"&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
 		
 		response.sendRedirect(snsapi);
@@ -79,7 +74,7 @@ public class WxPayapiOperation extends AbstractPayOperation {
 			throw new PayException("用户未授权");
 		}
 		
-		String access_token_url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid="+appId+"&secret="+appSecret+"&code="+wxOpenIdCode+"&grant_type=authorization_code";
+		String access_token_url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid="+wxConfig.getAppId()+"&secret="+wxConfig.getAppSecret()+"&code="+wxOpenIdCode+"&grant_type=authorization_code";
 		String access_token_result = HttpUtil.doGet(access_token_url, null);
 		if(StringUtil.isEmpty(access_token_result))
 		{
@@ -104,24 +99,24 @@ public class WxPayapiOperation extends AbstractPayOperation {
 		String total_fee = (String)session.getAttribute("total_fee");
 		
 		String timestamp = DateTimeUtil.getTimeStamp()+"";
-		String noncestr  = MD5Coder.encode(appId+appSecret).toUpperCase();
+		String noncestr  = MD5Coder.encode(wxConfig.getAppId()+wxConfig.getAppSecret()).toUpperCase();
 
 		Map<String,String> requestData = new TreeMap<String,String>();
-		requestData.put("notify_url", notifyUrl);
+		requestData.put("notify_url", wxConfig.getNotifyUrl());
 		requestData.put("nonce_str", noncestr);
 		requestData.put("out_trade_no", out_trade_no);
 		requestData.put("spbill_create_ip", request.getRemoteAddr());
 		requestData.put("total_fee", total_fee);
-		requestData.put("appid", appId);
+		requestData.put("appid", wxConfig.getAppId());
 		if(!StringUtil.isEmpty(subject) && subject.length() > 32) {
 			requestData.put("body", subject.substring(0, 29) + "...");
 		} else {
 			requestData.put("body", subject);
 		}
 		requestData.put("detail", subject);
-		requestData.put("mch_id", mchId);
+		requestData.put("mch_id", wxConfig.getMchId());
 		requestData.put("openid", openid);
-		requestData.put("attach", appId);
+		requestData.put("attach", wxConfig.getAppId());
 		requestData.put("trade_type", "JSAPI");
 		//签名
 		StringBuilder signData = new StringBuilder();
@@ -131,7 +126,7 @@ public class WxPayapiOperation extends AbstractPayOperation {
 			signData.append(mark).append(key).append("=").append(requestData.get(key));
 			mark = "&";
 		}
-		signData.append(mark).append("key=").append(mchKey);
+		signData.append(mark).append("key=").append(wxConfig.getMchKey());
 		logger.info(signData.toString());
 		String sign = MD5Coder.encode(signData.toString()).toUpperCase();
 		requestData.put("sign", sign);
@@ -173,7 +168,7 @@ public class WxPayapiOperation extends AbstractPayOperation {
 		}
 		
 		Map<String,String> getBrandWCPayRequestSignData = new TreeMap<String,String>();
-		getBrandWCPayRequestSignData.put("appId", appId);
+		getBrandWCPayRequestSignData.put("appId", wxConfig.getAppId());
 		getBrandWCPayRequestSignData.put("timeStamp", timestamp);
 		getBrandWCPayRequestSignData.put("nonceStr", noncestr);
 		getBrandWCPayRequestSignData.put("package", "prepay_id="+prepayId);
@@ -186,7 +181,7 @@ public class WxPayapiOperation extends AbstractPayOperation {
 			getBrandWCPayRequestSignDataString.append(mark).append(key).append("=").append(getBrandWCPayRequestSignData.get(key));
 			mark = "&";
 		}
-		getBrandWCPayRequestSignDataString.append(mark).append("key=").append(mchKey);
+		getBrandWCPayRequestSignDataString.append(mark).append("key=").append(wxConfig.getMchKey());
 		logger.info(" ===== getBrandWCPayRequestSignDataString : "+getBrandWCPayRequestSignDataString.toString());
 		sign = MD5Coder.encode(getBrandWCPayRequestSignDataString.toString()).toUpperCase();
 
@@ -196,7 +191,7 @@ public class WxPayapiOperation extends AbstractPayOperation {
 		jsapi_context.append("function onBridgeReady(){");
 		jsapi_context.append("WeixinJSBridge.invoke('getBrandWCPayRequest',");
 		jsapi_context.append("{");
-		jsapi_context.append("\"appId\"    : \""+appId+"\",");
+		jsapi_context.append("\"appId\"    : \""+wxConfig.getAppId()+"\",");
 		jsapi_context.append("\"timeStamp\": \""+timestamp+"\",");
 		jsapi_context.append("\"nonceStr\" : \""+noncestr+"\",");
 		jsapi_context.append("\"package\"  : \"prepay_id="+prepayId+"\",");
@@ -207,17 +202,17 @@ public class WxPayapiOperation extends AbstractPayOperation {
 		jsapi_context.append("{");
 		jsapi_context.append("if(res.err_msg == \"get_brand_wcpay_request:ok\" )"); 
 		jsapi_context.append("{");
-		jsapi_context.append("location.replace(\""+success_url+"\");"); 
+		jsapi_context.append("location.replace(\""+wxConfig.getSuccess_url()+"\");"); 
 		jsapi_context.append("}"); 
 		jsapi_context.append("else if(res.err_msg == \"get_brand_wcpay_request:cancel\" )"); 
 		jsapi_context.append("{");
-		jsapi_context.append("location.replace(\""+failed_url+"\");");
+		jsapi_context.append("location.replace(\""+wxConfig.getFailed_url()+"\");");
 		jsapi_context.append("}");
 		jsapi_context.append("else if(res.err_msg == \"get_brand_wcpay_request:fail\" )"); 
 		jsapi_context.append("{");
-		jsapi_context.append("location.replace(\""+failed_url+"\");");
+		jsapi_context.append("location.replace(\""+wxConfig.getFailed_url()+"\");");
 		jsapi_context.append("} else {");
-		jsapi_context.append("location.replace(\""+failed_url+"\");");
+		jsapi_context.append("location.replace(\""+wxConfig.getFailed_url()+"\");");
 		jsapi_context.append("}");
 		jsapi_context.append("}");
 		jsapi_context.append(")");
@@ -277,7 +272,7 @@ public class WxPayapiOperation extends AbstractPayOperation {
 			}
 			
 			String nonce_str = notifyDataDoc.selectSingleNode("//xml/nonce_str").getText();
-			if( !MD5Coder.encode(appId+appSecret).toUpperCase().equals(nonce_str) )
+			if( !MD5Coder.encode(wxConfig.getAppId()+wxConfig.getAppSecret()).toUpperCase().equals(nonce_str) )
 			{
 				toResponse("<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[微信支付通知签名失败]]></return_msg></xml>");
 				logger.info(" === wxpay notify result > nonce_str : "+nonce_str);
@@ -289,8 +284,8 @@ public class WxPayapiOperation extends AbstractPayOperation {
 			
 			//orderquery
 			Map<String,String> orderqueryData = new TreeMap<String,String>();
-			orderqueryData.put("appid", appId);
-			orderqueryData.put("mch_id", mchId);
+			orderqueryData.put("appid", wxConfig.getAppId());
+			orderqueryData.put("mch_id", wxConfig.getMchId());
 			orderqueryData.put("transaction_id", transaction_id);
 			orderqueryData.put("out_trade_no", out_trade_no);
 			orderqueryData.put("nonce_str", nonce_str);
@@ -302,7 +297,7 @@ public class WxPayapiOperation extends AbstractPayOperation {
 				signData.append(mark).append(key).append("=").append(orderqueryData.get(key));
 				mark = "&";
 			}
-			signData.append(mark).append("key=").append(mchKey);
+			signData.append(mark).append("key=").append(wxConfig.getMchKey());
 			logger.info(signData.toString());
 			String sign = MD5Coder.encode(signData.toString()).toUpperCase();
 			

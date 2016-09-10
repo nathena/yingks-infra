@@ -1,4 +1,4 @@
-package com.yingks.pay.wx;
+package com.yingks.wx.pay;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,7 +28,8 @@ import com.yingks.infra.utils.MatrixToImageWriter;
 import com.yingks.infra.utils.StringUtil;
 import com.yingks.pay.AbstractPayOperation;
 import com.yingks.pay.PayNotifyAbleInterface;
-import com.yingks.pay.exception.PayException;
+import com.yingks.wx.WxConfig;
+import com.yingks.wx.exception.PayException;
 
 public class WxPayNativeOperation extends AbstractPayOperation {
 
@@ -36,15 +37,11 @@ public class WxPayNativeOperation extends AbstractPayOperation {
 	
 	private static String wxOrderUrl = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 	
-	private static String appId = WxConfig.appId;
-	private static String appSecret = WxConfig.appSecret;
-	private static String mchId = WxConfig.mchId;
-	private static String mchKey = WxConfig.mchKey;
+	private WxConfig wxConfig;
 	
-	private static String notifyUrl = WxConfig.nativeNotifyUrl;
-	
-	public WxPayNativeOperation(PayNotifyAbleInterface paymentOperation) {
+	public WxPayNativeOperation(WxConfig wxConfig, PayNotifyAbleInterface paymentOperation) {
 		super(paymentOperation);
+		this.wxConfig = wxConfig;
 	}
 
 	public void toPay_pattern_one(HttpServletRequest request,HttpServletResponse response) throws WriterException, IOException
@@ -62,8 +59,8 @@ public class WxPayNativeOperation extends AbstractPayOperation {
 		//String noncestr = MD5Coder.encode(appId+appSecret).toUpperCase(Locale.CHINA);
 
 		SortedMap<String, Object> sortedMap = new TreeMap<String, Object>();
-		sortedMap.put("appid", appId);
-		sortedMap.put("mch_id", mchId);
+		sortedMap.put("appid", wxConfig.getAppId());
+		sortedMap.put("mch_id", wxConfig.getMchId());
 		sortedMap.put("product_id",out_trade_no);
 		sortedMap.put("time_stamp",System.currentTimeMillis());
 
@@ -74,7 +71,7 @@ public class WxPayNativeOperation extends AbstractPayOperation {
 			signData.append(mark).append(key).append("=").append(sortedMap.get(key));
 			mark = "&";
 		}
-		signData.append(mark).append("key=").append(mchKey);
+		signData.append(mark).append("key=").append(wxConfig.getMchKey());
 		String sign = MD5Coder.encode(signData.toString()).toUpperCase(Locale.CHINA);
 		sortedMap.put("sign", sign);
 
@@ -107,7 +104,7 @@ public class WxPayNativeOperation extends AbstractPayOperation {
 		logger.debug(" === wxpay native pattern two start === ");
 		
 		String trade_type = "NATIVE";
-		String attach  = appId;
+		String attach  = wxConfig.getAppId();
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("WIDout_trade_no").getBytes("ISO-8859-1"),"UTF-8");
 		//订单名称
@@ -116,17 +113,17 @@ public class WxPayNativeOperation extends AbstractPayOperation {
 		String total_fee = new String(request.getParameter("WIDtotal_fee").getBytes("ISO-8859-1"),"UTF-8");
 		
 		//签名
-		String noncestr = MD5Coder.encode(appId+appSecret).toUpperCase(Locale.CHINA);
+		String noncestr = MD5Coder.encode(wxConfig.getAppId()+wxConfig.getAppSecret()).toUpperCase(Locale.CHINA);
 
 		SortedMap<String, String> sortedMap = new TreeMap<String, String>();
-		sortedMap.put("notify_url", notifyUrl);
+		sortedMap.put("notify_url", wxConfig.getNotifyUrl());
 		sortedMap.put("nonce_str", noncestr);
 		sortedMap.put("out_trade_no", out_trade_no);
 		sortedMap.put("spbill_create_ip", request.getRemoteAddr());
 		sortedMap.put("total_fee", total_fee);
-		sortedMap.put("appid", appId);
+		sortedMap.put("appid", wxConfig.getAppId());
 		sortedMap.put("body", subject);
-		sortedMap.put("mch_id", mchId);
+		sortedMap.put("mch_id", wxConfig.getMchId());
 		sortedMap.put("attach", attach);
 		sortedMap.put("product_id",out_trade_no);
 		sortedMap.put("trade_type", trade_type);
@@ -138,7 +135,7 @@ public class WxPayNativeOperation extends AbstractPayOperation {
 			signData.append(mark).append(key).append("=").append(sortedMap.get(key));
 			mark = "&";
 		}
-		signData.append(mark).append("key=").append(mchKey);
+		signData.append(mark).append("key=").append(wxConfig.getMchKey());
 		String sign = MD5Coder.encode(signData.toString()).toUpperCase(Locale.CHINA);
 		sortedMap.put("sign", sign);
 
@@ -207,7 +204,7 @@ public class WxPayNativeOperation extends AbstractPayOperation {
 
 		//调用
 		String trade_type = "NATIVE";
-		String attach  = appId;
+		String attach  = wxConfig.getAppId();
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("WIDout_trade_no").getBytes("ISO-8859-1"),"UTF-8");
 		//订单名称
@@ -216,14 +213,14 @@ public class WxPayNativeOperation extends AbstractPayOperation {
 		String total_fee = new String(request.getParameter("WIDtotal_fee").getBytes("ISO-8859-1"),"UTF-8");
 
 		SortedMap<String, String> sortedMap = new TreeMap<String, String>();
-		sortedMap.put("notify_url", notifyUrl);
+		sortedMap.put("notify_url", wxConfig.getNotifyUrl());
 		sortedMap.put("nonce_str", _nonce_str);
 		sortedMap.put("out_trade_no", _product_id);
 		sortedMap.put("spbill_create_ip", request.getRemoteAddr());
 		sortedMap.put("total_fee", total_fee);
-		sortedMap.put("appid", appId);
+		sortedMap.put("appid", wxConfig.getAppId());
 		sortedMap.put("body", subject);
-		sortedMap.put("mch_id", mchId);
+		sortedMap.put("mch_id", wxConfig.getMchId());
 		sortedMap.put("attach", attach);
 		sortedMap.put("product_id",_product_id);
 		sortedMap.put("trade_type", trade_type);
@@ -235,7 +232,7 @@ public class WxPayNativeOperation extends AbstractPayOperation {
 			signData.append(mark).append(key).append("=").append(sortedMap.get(key));
 			mark = "&";
 		}
-		signData.append(mark).append("key=").append(mchKey);
+		signData.append(mark).append("key=").append(wxConfig.getMchKey());
 		String sign = MD5Coder.encode(signData.toString()).toUpperCase(Locale.CHINA);
 		sortedMap.put("sign", sign);
 
@@ -258,8 +255,8 @@ public class WxPayNativeOperation extends AbstractPayOperation {
 
 		SortedMap<String, String> responseData = new TreeMap<String, String>();
 
-		responseData.put("appid", appId);
-		responseData.put("mch_id", mchId);
+		responseData.put("appid", wxConfig.getAppId());
+		responseData.put("mch_id", wxConfig.getMchId());
 		responseData.put("nonce_str", _nonce_str);
 
 		StringBuilder responseDataSign = new StringBuilder();
@@ -301,7 +298,7 @@ public class WxPayNativeOperation extends AbstractPayOperation {
 			responseDataSign.append(mark).append(key).append("=").append(responseData.get(key));
 			mark = "&";
 		}
-		responseDataSign.append(mark).append("key=").append(mchKey);
+		responseDataSign.append(mark).append("key=").append(wxConfig.getMchKey());
 
 		responseData.put("sign", MD5Coder.encode(signData.toString()).toUpperCase(Locale.CHINA));
 

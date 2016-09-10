@@ -1,4 +1,4 @@
-package com.yingks.pay.wx;
+package com.yingks.wx.pay;
 
 import java.util.Locale;
 import java.util.SortedMap;
@@ -26,21 +26,18 @@ import com.yingks.pay.PayNotifyAbleInterface;
 import com.yingks.pay.PayStatusEnum;
 import com.yingks.pay.TradeNotify;
 import com.yingks.pay.TradeNotify.Type;
+import com.yingks.wx.WxConfig;
 
 public class WxPayappOperation extends AbstractPayOperation {
 
 	private static Logger logger  = Logger.getLogger(WxPayappOperation.class);
 	
-	private static String appId = WxConfig.appId;
-	private static String appKey = WxConfig.appKey;
-	private static String appSecret = WxConfig.appSecret;
-	private static String mchId = WxConfig.mchId;
-	private static String mchKey = WxConfig.mchKey;
+	private WxConfig wxConfig;
 	
-	private static String notifyUrl = WxConfig.appNotifyUrl;
-	
-	public WxPayappOperation(PayNotifyAbleInterface paymentOperation) {
+	public WxPayappOperation(WxConfig wxConfig, PayNotifyAbleInterface paymentOperation) {
 		super(paymentOperation);
+		
+		this.wxConfig = wxConfig;
 	}
 
 
@@ -76,7 +73,7 @@ public class WxPayappOperation extends AbstractPayOperation {
 			return;
 		}
 		
-		String wxAccessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appId + "&secret=" + appSecret;
+		String wxAccessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + wxConfig.getAppId() + "&secret=" + wxConfig.getAppSecret();
 		String wxPreOrderIdUrl = "https://api.weixin.qq.com/pay/genprepay?access_token=";
 		byte[] result = HttpUtil.doRestPost(wxAccessTokenUrl, "");
 		JSONObject token = JSONObject.parseObject(new String(result,"UTF-8"));
@@ -98,9 +95,9 @@ public class WxPayappOperation extends AbstractPayOperation {
 		sortedMap.put("body", subject);
 		sortedMap.put("fee_type", "1");
 		sortedMap.put("input_charset", "UTF-8");
-		sortedMap.put("notify_url", notifyUrl);
+		sortedMap.put("notify_url", wxConfig.getNotifyUrl());
 		sortedMap.put("out_trade_no", out_trade_no);
-		sortedMap.put("partner", mchId);
+		sortedMap.put("partner", wxConfig.getMchId());
 		sortedMap.put("spbill_create_ip", request.getRemoteAddr());
 		sortedMap.put("total_fee", total_fee);
 
@@ -118,7 +115,7 @@ public class WxPayappOperation extends AbstractPayOperation {
 			toResponse(retJson.toJSONString(),"application/json");
 			return;
 		}
-		String sign = MD5Coder.encode(dataBuilder.toString() + "&key=" + mchKey).toUpperCase(Locale.CHINA);
+		String sign = MD5Coder.encode(dataBuilder.toString() + "&key=" + wxConfig.getMchKey()).toUpperCase(Locale.CHINA);
 		String packageData =  dataBuilder.append("&sign=").append(sign).toString();
 
 		// ===============                  =================
@@ -126,12 +123,12 @@ public class WxPayappOperation extends AbstractPayOperation {
 		String timeStamp = DateTimeUtil.getTimeStamp() + "";
 		// =============== app_signature参数 =================
 		sortedMap = new TreeMap<String, String>();
-		sortedMap.put("appid", appId);
-		sortedMap.put("appkey", appKey);
+		sortedMap.put("appid", wxConfig.getAppId());
+		sortedMap.put("appkey", wxConfig.getAppSecret());
 		sortedMap.put("noncestr", noncestr);
 		sortedMap.put("package", packageData);
 		sortedMap.put("timestamp", timeStamp);
-		sortedMap.put("traceid", appId);
+		sortedMap.put("traceid", wxConfig.getAppId());
 
 		dataBuilder = new StringBuilder();
 		JSONObject postData = new JSONObject();
@@ -208,7 +205,7 @@ public class WxPayappOperation extends AbstractPayOperation {
 				toResponse("fail");
 				return;
 			}
-			String sign = MD5Coder.encode(dataBuilder.toString() + "&key=" + mchKey).toUpperCase(Locale.CHINA);
+			String sign = MD5Coder.encode(dataBuilder.toString() + "&key=" + wxConfig.getMchKey()).toUpperCase(Locale.CHINA);
 			if(!sign.equals(postSign)) {
 				logger.error(" ============== 签名验证不正确  ================ ");
 				toResponse("fail");
